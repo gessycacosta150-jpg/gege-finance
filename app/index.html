@@ -8,7 +8,7 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
 </head><body>
 <script>
-window.GEGE_V = 3; window.GEGE_NATIVO = 3; window.GEGE_NOME = '1.2';
+window.GEGE_V = 4; window.GEGE_NATIVO = 3; window.GEGE_NOME = '1.3';
 (function () {
   try {
     if (window.__gegeAtual) return;
@@ -166,6 +166,14 @@ h2{font-family:var(--font-d);font-weight:700;font-size:1.15rem;margin:0;line-hei
 .gear{border:1px solid var(--line);background:var(--panel);border-radius:14px;width:46px;height:46px;font-size:1.25rem;flex:none}
 .cfgs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
 .err{color:var(--bad);font-size:.85rem}
+.plano.alerta{outline:2px solid var(--warn);outline-offset:-2px}
+.plano .ck{display:grid;gap:6px}
+.plano .ck label{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,var(--line) 35%,transparent);cursor:pointer;line-height:1.35}
+.plano .ck label b{display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;margin-right:4px}
+.plano .ck label.feito span{text-decoration:line-through;opacity:.6}
+.plano .ck input{margin-top:3px;accent-color:var(--accent);width:18px;height:18px;flex:none}
+.plano .etapas h3{margin:6px 0 2px;font-size:15px}
+.estrategia .sinal small{line-height:1.35}
 </style>
 
 <div class="app" id="view"><div class="card"><div class="empty" id="boot">Carregando suas contas…</div></div></div>
@@ -257,6 +265,60 @@ function listaHtml(tipo) {
   return vis.length ? montarLista(vis) : `<div class="empty">${all.length ? 'Nada encontrado com esse filtro.' : tipo === 'entrada' ? 'Nenhum recebimento neste mês. Use o botão + para adicionar.' : 'Nenhuma despesa neste mês. Use o botão + para adicionar.'}</div>`;
 }
 
+/* ---------- plano: dia do pagamento + estratégia de economia ---------- */
+let plano = {};
+const PLANO = {
+  ordem: ['Pagar primeiro FIES, faculdade, CAU, terrenos e contas básicas', 'Transferir R$ 500 para a Caixinha Nubank no mesmo dia do salário', 'Deixar R$ 900 como limite total do cartão (não como valor adicional)', 'Manter Pole Dance e pausar Calistenia até formar um mês de reserva', 'Quando Maikon TV terminar, direcionar os R$ 293,63 para a reserva'],
+  teto: 900, alerta: 0.8, reserva1: 500, reserva2: 800, caixinha: 2200, economia: 550,
+  variaveis: ['Alimentação e mercado', 'Pets e cuidados pessoais', 'Lazer e compras']
+};
+const doSantander = (x) => x.tipo !== 'entrada' && (x.forma === 'Cartão Santander' || /santander/i.test(x.grupo || ''));
+function sinais(m) {
+  const all = doMes(m), sai = all.filter((x) => x.tipo !== 'entrada'), sal = all.filter((x) => x.tipo === 'entrada' && x.cat === 'Salário');
+  const cartao = sum(sai.filter(doSantander)), reserva = sum(sai.filter((x) => x.cat === 'Reserva e investimentos'));
+  const varM = (mm) => sum(doMes(mm).filter((x) => x.tipo !== 'entrada' && (PLANO.variaveis.includes(x.cat) || x.cat === 'Cartões e parcelados' || doSantander(x))));
+  const hj = hoje(), dt = new Date(hj + 'T12:00:00'), seg = new Date(dt); seg.setDate(dt.getDate() - (dt.getDay() + 6) % 7);
+  const iso = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()), ini = iso(seg), segAnt = new Date(seg); segAnt.setDate(seg.getDate() - 7);
+  const semana = (a, b) => sum(lanc.filter((x) => x.tipo !== 'entrada' && PLANO.variaveis.includes(x.cat) && (x.venc || '') >= a && (x.venc || '') < b));
+  const fimSem = new Date(seg); fimSem.setDate(seg.getDate() + 7);
+  return { cartao, reserva, salCaiu: sal.some((x) => x.pago), feitos: ((plano.feitos || {})[m]) || [],
+    caixinha: sai.filter((x) => /caixinha/i.test(x.desc)), semana: semana(ini, iso(fimSem)), semanaAnt: semana(iso(segAnt), ini), sexta: dt.getDay() === 5,
+    terreno: sai.filter((x) => x.cat === 'Terrenos e IPTU'), dividas: sum(sai.filter((x) => x.cat === 'Dívidas antigas (FIES e CAU)')),
+    varAtual: varM(m), varAnt: varM(addM(m, -1)) };
+}
+function planoHtml(m) {
+  const s = sinais(m), n = s.feitos.filter(Boolean).length, tot = PLANO.ordem.length, tudo = n === tot, atual = m === hoje().slice(0, 7);
+  const destaque = atual && s.salCaiu && !tudo;
+  const meta = s.reserva >= PLANO.reserva1 ? PLANO.reserva2 : PLANO.reserva1, pr = Math.min(1, s.reserva / meta);
+  return `<div class="card plano${destaque ? ' alerta' : ''}"><div class="head"><h2>🗓️ Ordem no dia do pagamento</h2><b>${n}/${tot}</b></div>
+    ${destaque ? `<div class="rec warn"><b>💸</b><span>${cfg.tom === 'direto' ? 'O salário entrou. Siga a ordem abaixo.' : 'O salário caiu! Antes de qualquer comprinha, segue a ordem aqui, combinado?'}</span></div>` : tudo ? `<div class="rec ok"><b>✅</b><span>${cfg.tom === 'direto' ? 'Ordem do dia do pagamento cumprida.' : 'Ordem do dia do pagamento cumprida. Disciplina de quem vai longe!'}</span></div>` : ''}
+    <div class="ck">${PLANO.ordem.map((t, i) => `<label class="${s.feitos[i] ? 'feito' : ''}"><input type="checkbox" data-act="plano-ck" data-k="${i}" ${s.feitos[i] ? 'checked' : ''} ${canWrite ? '' : 'disabled'}><span><b>${i + 1}</b> ${esc(t)}</span></label>`).join('')}</div>
+    <div class="etapas"><h3>🎯 Meta em duas etapas</h3>
+      <div class="kv"><span>${s.reserva >= PLANO.reserva1 ? 'Etapa 1 cumprida! Agora rumo a ' + brl(PLANO.reserva2) : 'Agora: guardar ' + brl(PLANO.reserva1) + '/mês'}</span><b>${Math.round(pr * 100)}%</b><small>${brl(s.reserva)} guardados em ${nomeM(m)} (categoria Reserva e investimentos) · depois: ${brl(PLANO.reserva2)}/mês</small><i style="width:${(pr * 100).toFixed(1)}%;background:var(--${pr >= 1 ? 'ok' : 'warn'})"></i></div></div></div>`;
+}
+function estrategiaHtml(m) {
+  const s = sinais(m), p = s.cartao / PLANO.teto, kc = p > 1.00001 ? 'bad' : p >= PLANO.alerta ? 'warn' : 'ok';
+  const ico = (k) => k === 'ok' ? '✅' : k === 'bad' ? '🚨' : k === 'warn' ? '⚠️' : '💡';
+  const terCartao = s.terreno.some((x) => /cart/i.test(x.forma || ''));
+  const eco = s.varAnt - s.varAtual, ke = !s.varAnt ? 'n' : eco >= PLANO.economia ? 'ok' : eco > 0 ? 'warn' : 'bad';
+  const kw = s.semanaAnt && s.semana > s.semanaAnt ? 'warn' : 'ok';
+  const it = [
+    ['1. Teto para cartão', kc, `${brl(s.cartao)} de ${brl(PLANO.teto)} no Santander (${Math.round(p * 100)}%)${kc === 'bad' ? ' · passou ' + brl(s.cartao - PLANO.teto) + '. Cartão bloqueado!' : kc === 'warn' ? ' · chegou em 80%: bloqueie novas compras' : ' · sobram ' + brl(PLANO.teto - s.cartao)}`, p],
+    ['2. Revisar terreno e tributos', terCartao ? 'warn' : 'n', terCartao ? 'Tem terreno ou IPTU no cartão: tire daí e pague pela reserva separada' : `IPTU e parcelas do terreno numa reserva mensal, fora do cartão · ${brl(sum(s.terreno))} em ${nomeM(m)}`],
+    ['3. Negociar dívidas', 'n', `Prioridade: Santander, FIES e CAU. Toda economia vai para a dívida com maior juros · FIES e CAU em ${nomeM(m)}: ${brl(s.dividas)}`],
+    ['4. Meta semanal variável', s.sexta ? 'warn' : kw, `Mercado, cabelo, pets e compras nesta semana: ${brl(s.semana)}${s.semanaAnt ? ' (semana passada: ' + brl(s.semanaAnt) + ')' : ''}${s.sexta ? ' · hoje é sexta: dia de comparar!' : ' · compare toda sexta-feira'}`],
+    ['5. Poupança automática', s.caixinha.length ? 'ok' : 'warn', s.caixinha.length ? `Caixinha Nubank: ${brl(sum(s.caixinha))} transferidos em ${nomeM(m)}` : `Transferir ${brl(PLANO.caixinha)} para a Caixinha Nubank no dia do salário, não como sobra · ainda não vi a transferência em ${nomeM(m)}`],
+    ['6. Meta inicial', ke, s.varAnt ? (eco > 0 ? `Economizou ${brl(eco)} em cartão e variáveis comparado a ${nomeM(addM(m, -1))} (meta ${brl(PLANO.economia)})` : `Cartão e variáveis ${brl(-eco)} acima de ${nomeM(addM(m, -1))}. Meta: economizar ${brl(PLANO.economia)} por mês`) : `Economizar ${brl(PLANO.economia)} por mês, começando por cartão e gastos variáveis`]
+  ];
+  return `<div class="card estrategia"><div><h2>💡 Estratégia de economia</h2><p class="sub">Sinais do seu plano, calculados com os lançamentos de ${nomeM(m)}</p></div>
+    ${it.map(([t, k, d, pp]) => `<div class="kv sinal ${k}"><span>${ico(k)} ${esc(t)}</span><b></b><small>${esc(d)}</small>${pp != null ? `<i style="width:${Math.min(100, pp * 100).toFixed(1)}%;background:var(--${k})"></i>` : ''}</div>`).join('')}</div>`;
+}
+async function marcarPlano(i, on) {
+  const m = st.mes, f = { ...(plano.feitos || {}) }, a = [...(f[m] || [])]; a[i] = on; f[m] = a;
+  try { await db.doc('config/plano').set({ ...plano, feitos: f }); plano = { ...plano, feitos: f };
+    if (a.filter(Boolean).length === PLANO.ordem.length) toast(cfg.tom === 'direto' ? 'Ordem do dia do pagamento concluída.' : '🏆 Ordem completa! Seu eu do futuro mandou um beijo.');
+    render(); } catch (e) { toast('⚠️ Não consegui salvar agora.'); }
+}
 function gastoCat(m) { const g = new Map(); for (const x of doMes(m)) if (x.tipo !== 'entrada') g.set(x.cat || 'Outros', (g.get(x.cat || 'Outros') || 0) + (+x.valor||0)); return g; }
 function recados(m) {
   const dir = cfg.tom === 'direto', R = (k, e, f, d) => [k, e, dir ? d : f];
@@ -271,6 +333,9 @@ function recados(m) {
   const passou = lim.filter((x) => x[2] > x[1] + 0.005), perto = lim.filter((x) => x[2] >= x[1] * 0.8 && x[2] <= x[1] + 0.005);
   if (passou.length) { const [c, t, v] = passou[0]; out.push(R('bad','🧨', c + ' estourou o limite em ' + brl(v - t) + '. Esse orçamento pediu socorro!' + (passou.length > 1 ? ' E não está sozinha: mais ' + (passou.length - 1) + ' categoria' + (passou.length > 2 ? 's' : '') + ' passou.' : ''), c + ' passou do limite em ' + brl(v - t) + (passou.length > 1 ? ' (mais ' + (passou.length - 1) + ' categoria' + (passou.length > 2 ? 's' : '') + ' acima do limite)' : '') + '.')); }
   else if (perto.length) { const [c, t, v] = perto[0]; out.push(R('warn','🫣', c + ' já usou ' + Math.round(v / t * 100) + '% do limite. Pé no freio, faltam só ' + brl(t - v) + '.', c + ' já usou ' + Math.round(v / t * 100) + '% do limite. Restam ' + brl(t - v) + '.')); }
+  const tc = sum(sai.filter(doSantander));
+  if (tc > PLANO.teto + 0.005) out.push(R('bad','💳','O Santander passou o teto de ' + brl(PLANO.teto) + ' em ' + brl(tc - PLANO.teto) + '. Cartão de castigo até o mês que vem!','Cartão Santander passou o teto de ' + brl(PLANO.teto) + ' em ' + brl(tc - PLANO.teto) + '.'));
+  else if (tc >= PLANO.teto * PLANO.alerta) out.push(R('warn','💳','O Santander já bateu ' + Math.round(tc / PLANO.teto * 100) + '% do teto de ' + brl(PLANO.teto) + '. Hora de bloquear novas compras!','Cartão Santander em ' + Math.round(tc / PLANO.teto * 100) + '% do teto. Bloqueie novas compras.'));
   const falta = ent.filter((x) => !x.pago);
   if (falta.length && pend.length && m === hoje().slice(0,7)) out.push(R('warn','✋','Segura a carteira! Ainda não caiu ' + brl(sum(falta)) + ' (' + nomes(falta) + '). Nada de gastar por conta.','Ainda não entrou ' + brl(sum(falta)) + ' (' + nomes(falta) + ').'));
   const ant = sum(doMes(addM(m, -1)).filter((x) => x.tipo !== 'entrada')), d = tS - ant;
@@ -337,6 +402,8 @@ function telaInicio() {
   return (vazio() ? `<div class="card"><h2>👋 Bem-vinda!</h2><p class="muted" style="margin:0">Para trazer suas contas, toque em Restaurar backup e escolha o arquivo de backup (.json). Ou comece do zero com o botão +.</p><button class="btn" data-act="bk-imp">⬆️ Restaurar backup</button><input id="bk-file" type="file" accept=".json,application/json,application/octet-stream,text/plain" hidden></div>` : '') + `<div class="head">${titulo('Oi, ' + esc(cfg.nome || 'Gessyca') + ' 👋', 'Bora ver como anda o dinheiro?')}<button class="gear" data-act="tab" data-k="config" aria-label="Configurações">⚙️</button></div>` + stepHtml() + recHtml(st.mes) +
     `<div class="hero"><div><h2>Resumo do mês</h2><dl><dt>Entradas previstas</dt><dd>${brl(prevE)}</dd><dt>Já recebido</dt><dd>${brl(rcb)}</dd><dt>Contas do mês</dt><dd>${brl(tSai)}</dd><dt>Já pago</dt><dd>${brl(pago)}</dd><dt>Falta pagar</dt><dd>${brl(tSai - pago)}</dd><dt>${prevE - tSai < 0 ? 'Falta no mês' : 'Sobra no mês'}</dt><dd>${brl(prevE - tSai)}</dd></dl></div>
       <svg class="donut" viewBox="0 0 96 96" role="img" aria-label="${Math.round(p*100)}% das contas pagas"><circle cx="48" cy="48" r="38" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="12"/><circle cx="48" cy="48" r="38" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(c*p).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 48 48)"/><text x="48" y="53" text-anchor="middle" font-size="16" font-weight="700" fill="currentColor">${Math.round(p*100)}%</text></svg></div>
+    ${planoHtml(st.mes)}
+    ${estrategiaHtml(st.mes)}
     <div class="card"><div class="head"><h2>Orçamento do mês</h2><button class="link" data-act="tab" data-k="estatisticas">Ver todos</button></div>${orcHtml(st.mes, 3)}</div>
     <div class="short">${TABS.slice(1).map(([k,l]) => `<button data-act="tab" data-k="${k}"><svg viewBox="0 0 24 24">${ICON[k]}</svg>${k === 'recebimentos' ? 'Recebimentos' : k === 'estatisticas' ? 'Estatísticas' : k === 'calendario' ? 'Calendário' : l}</button>`).join('')}</div>
     <div class="card"><div class="head"><h2>Próximos pagamentos</h2><button class="link" data-act="tab" data-k="despesas">Ver todos</button></div><div class="rows">${prox.length ? prox.map(rowHtml).join('') : '<div class="empty">Nenhum pagamento pendente neste mês.</div>'}</div></div>
@@ -514,10 +581,10 @@ function guardarForm(o) {
 let aprend = {};
 const ORIGENS = [['santander','Cartão Santander (fatura)','Cartão Santander','Fatura Cartão Crédito Santander'],['bradesco','Cartão Bradesco (fatura)','Cartão Bradesco','Fatura Cartão Crédito Bradesco'],['nubank','Cartão Nubank (fatura)','Cartão Nubank','Fatura Cartão Crédito Nubank'],['conta-santander','Conta Santander (extrato)','Pix / boleto / débito','Extrato Conta Santander'],['conta-bradesco','Conta Bradesco (extrato)','Pix / boleto / débito','Extrato Conta Bradesco'],['conta-nubank','Conta Nubank (extrato)','Pix / boleto / débito','Extrato Conta Nubank'],['conta-outro','Outra conta (extrato)','Pix / boleto / débito','Extrato Conta Corrente']];
 const ehExtrato = (o) => String(o || '').startsWith('conta');
-const REGRAS = [[/sal[aá]rio|folha|bild/i,'Salário'],[/fies|\bcau\b/i,'Dívidas antigas (FIES e CAU)'],[/iptu|terreno|loteamento/i,'Terrenos e IPTU'],
+const REGRAS = [[/sal[aá]rio|folha|bild|c\/sal\b/i,'Salário'],[/fies|\bcau\b|conselho de arquitet/i,'Dívidas antigas (FIES e CAU)'],[/iptu|terreno|loteamento/i,'Terrenos e IPTU'],
   [/netflix|spotify|amazon|shopee|mercado ?livre|mercadolivre|mercado ?pago|magalu|cinema|shein|renner|riachuelo/i,'Lazer e compras'],
-  [/\bpet|ra[cç][aã]o|veterin|cobasi|sal[aã]o|cabel|beleza|barbear|pole|academia|smart ?fit|calistenia|farm[aá]c|drog/i,'Pets e cuidados pessoais'],
-  [/mercado|supermerc|atacad|assai|carrefour|padaria|a[cç]ougue|hortifruti|ifood|restaurante|lanch|pizza|burger|caf[eé]/i,'Alimentação e mercado'],
+  [/\bpet|ra[cç][aã]o|veterin|cobasi|sal[aã]o|cabel|beleza|barbear|pole|academia|fitness|smart ?fit|calistenia|farm[aá]c|drog/i,'Pets e cuidados pessoais'],
+  [/mercado|supermerc|atacad|assai|carrefour|padaria|a[cç]ougue|hortifruti|ifood|restaurante|marmit|lanch|pizza|burger|caf[eé]/i,'Alimentação e mercado'],
   [/uber|\b99|posto|combust|ipiranga|shell|estaciona|ped[aá]gio|cpfl|energia|enel|sanea|saae|internet|vivo|claro|\btim\b|faculdade|escola|curso/i,'Casa, estudo e transporte'],
   [/caixinha|aplica[cç]|invest|\bcdb\b|tesouro|poupan/i,'Reserva e investimentos']];
 const chave = (d) => d.toLowerCase().normalize('NFD').replace(/[^a-z]/g,'').slice(0, 24);
@@ -550,7 +617,12 @@ function lerCSV(t) {
 const hash = (t) => { let a = 5381, b = 52711; for (let i = 0; i < t.length; i++) { const c = t.charCodeAt(i); a = (a * 33) ^ c; b = (b * 31 + c) | 0; } return (a >>> 0).toString(36) + (b >>> 0).toString(36); };
 function montarImp(I) {
   const cartao = !ehExtrato(I.origem); let brutos = I.brutos.map((x) => ({ ...x }));
-  if (cartao && brutos.filter((x) => x.v > 0).length > brutos.filter((x) => x.v < 0).length) brutos.forEach((x) => { x.v = -x.v; });
+  const ant = (m) => { const [a, b] = m.split('-').map(Number); return b === 1 ? (a - 1) + '-12' : a + '-' + pad(b - 1); };
+  const faturaLanc = (k, mes) => { const o = ORIGENS.find((x) => x[0] === k); return o && lanc.some((q) => q.grupo === o[3] && q.tipo !== 'entrada' && (q.mes === mes || q.mes === ant(mes))) ? o[3] : ''; };
+  I.pagExt = [];
+  if (cartao) { const re = (EMISSOR.find(([k]) => k === I.origem) || [])[1], mesF = I.mes || st.mes;
+    if (re) I.pagExt = lanc.filter((q) => q.imp && q.tipo !== 'entrada' && /^Extrato/.test(q.grupo || '') && (q.mes === mesF || q.mes === ant(mesF)) && re.test(q.desc) && PAG_CARTAO.test(q.desc)).map((q) => ({ id: q.id, desc: q.desc, valor: q.valor, data: q.venc || q.mes, on: true })); }
+  if (cartao && !I.brutos.tabela && brutos.filter((x) => x.v > 0).length > brutos.filter((x) => x.v < 0).length) brutos.forEach((x) => { x.v = -x.v; });
   const vistos = new Map(), usados = new Set();
   I.txs = brutos.map((x) => {
     const base = I.origem + '|' + x.data + '|' + x.v.toFixed(2) + '|' + x.desc + '|' + x.fit, k = vistos.get(base) || 0; vistos.set(base, k + 1);
@@ -559,7 +631,10 @@ function montarImp(I) {
     const mes = I.mes || tx.data.slice(0, 7);
     if (lanc.some((q) => q.id === tx.id || q.impId === tx.id)) { tx.sel = false; tx.nota = 'já importado antes'; }
     else if (cartao && tx.tipo === 'entrada') { tx.sel = false; tx.nota = 'pagamento ou estorno na fatura'; }
-    else if (!cartao && tx.tipo === 'saida' && /fatura|cart[aã]o de cr[eé]d|pa?g(amen)?to\.? ?cart/i.test(tx.desc)) { tx.sel = false; tx.nota = 'pagamento de fatura: as compras entram pela fatura do cartão'; }
+    else if (!cartao && x.propria) { tx.sel = false; tx.nota = '🔁 transferência entre contas suas: não é ' + (tx.tipo === 'entrada' ? 'renda' : 'gasto') + ' (marque se quiser lançar)'; }
+    else if (!cartao && tx.tipo === 'saida' && PAG_CARTAO.test(tx.desc)) { const k = (EMISSOR.find(([, re]) => re.test(tx.desc)) || [])[0], g = k && faturaLanc(k, mes);
+      tx.sel = false; tx.pagFat = true; tx.auto = 'Cartões e parcelados';
+      tx.nota = g ? '💳 pagamento da ' + g + ': as compras já estão lançadas pela fatura' : '💳 parece pagamento de fatura de cartão' + (k ? ' ' + k[0].toUpperCase() + k.slice(1) : '') + ': importe a fatura para lançar as compras (marque aqui só se não for importar)'; }
     else { const igual = (q) => (q.tipo === 'entrada') === (tx.tipo === 'entrada') && Math.abs((+q.valor||0) - tx.valor) < 0.011 && !usados.has(key(q));
       const ja = doMes(mes).find((q) => q.pago && !q.imp && !q.impId && igual(q));
       if (ja) { tx.sel = false; tx.nota = 'parece ser ' + ja.desc + ', que já está como ' + (tx.tipo === 'entrada' ? 'recebido' : 'pago'); usados.add(key(ja)); return tx; }
@@ -579,6 +654,9 @@ function impForm() {
     <label class="f">Arquivo<input id="f-file" type="file" accept=".ofx,.qfx,.csv,.txt,.pdf,text/csv,application/x-ofx,application/pdf"></label>
     ${I.lendo ? '<div class="empty">📄 Lendo o PDF…</div>' : ''}
     ${I.senha ? `<label class="f">Este PDF tem senha (nos bancos costuma ser parte do CPF)<input id="f-senha" type="password" autocomplete="off"></label><button class="btn" data-act="imp-pdf">Abrir PDF</button>` : ''}
+    ${I.brutos ? (() => { const e = I.txs.filter((t) => t.tipo === 'entrada'), s = I.txs.filter((t) => t.tipo !== 'entrada'), soma = (l) => brl(l.reduce((a, t) => a + t.valor, 0));
+      return `<div class="card" style="margin:0"><b>${ehExtrato(I.origem) ? '🏦 Extrato da conta corrente' : '💳 Fatura do cartão'}</b><div class="muted">${esc((ORIGENS.find((o) => o[0] === I.origem) || [])[1] || '')}</div><div class="muted">⬆️ ${e.length} entradas: <b class="pos">${soma(e)}</b> · ⬇️ ${s.length} saídas: <b>${soma(s)}</b>${I.txs.some((t) => t.pagFat) ? ' · 💳 ' + I.txs.filter((t) => t.pagFat).length + ' pagamento(s) de fatura separados' : ''}${I.txs.some((t) => /transferência entre contas/.test(t.nota)) ? ' · 🔁 ' + I.txs.filter((t) => /transferência entre contas/.test(t.nota)).length + ' transferência(s) entre contas suas' : ''}</div></div>`; })() : ''}
+    ${(I.pagExt || []).length ? `<div class="card" style="margin:0"><b>⚠️ O pagamento desta fatura já entrou pelo extrato</b><div class="muted">Para não contar duas vezes, vou tirar o pagamento e deixar só as compras da fatura:</div>${I.pagExt.map((p, k) => `<label class="irow" style="grid-template-columns:auto 1fr auto"><input type="checkbox" id="i-pe-${k}" ${p.on ? 'checked' : ''}><span>${esc(p.desc)}</span><b>${brl(p.valor)}</b></label>`).join('')}</div>` : ''}
     ${I.brutos ? `<div><b>${esc(I.nome)}</b><div class="muted">${I.txs.length} lançamentos lidos · ${I.txs.filter((t) => t.sel).length} marcados · ${I.txs.filter((t) => t.match).length} batem com contas já lançadas</div></div><div>${lin || '<div class="empty">Não encontrei lançamentos neste arquivo.</div>'}</div>` : ''}
     ${!ehExtrato(I.origem) && I.brutos ? '<p class="muted" style="margin:0">Se este mês já tem um lançamento com o total da fatura, exclua-o depois para não contar duas vezes.</p>' : ''}
     <div class="acts"><button class="btn ghost" data-act="close">Cancelar</button>${I.txs.length ? '<button class="btn" id="i-go" data-act="imp-save">Importar marcados</button>' : ''}</div>`, I);
@@ -620,27 +698,72 @@ function extrairPDF(linhas, ref, origem) {
   }
   return out.filter((x) => Number.isFinite(x.v) && x.v);
 }
+const EMISSOR = [['santander', /santander/i], ['bradesco', /bradesco|bradescard/i], ['nubank', /nu pagamentos|nubank/i]];
+const PAG_CARTAO = /fatura|cart[aã]o de cr[eé]d|pa?g(amen)?to\.? ?cart|santander|bradesco|bradescard|nu pagamentos|nubank|ita[uú]|caixa econ|banco do brasil|banco inter|\bc6 ?bank/i;
+function extrairTabela(pags, ref) {
+  const out = [], reD = /^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/, reV = /^-?\s?(?:R\$\s?)?-?\d{1,3}(?:\.\d{3})*,\d{2}\s?[DC-]?$/;
+  const cen = (i) => i.x + i.w / 2; let data = '', achou = false, topo = '';
+  for (const its of pags) {
+    const hc = its.find((i) => /^cr[eé]dito/i.test(i.s.trim())), hd = hc && its.find((i) => /^d[eé]bito/i.test(i.s.trim()) && Math.abs(i.y - hc.y) < 3);
+    if (!hc || !hd) continue;
+    if (!achou) topo = its.filter((i) => i.y > hc.y + 2).map((i) => i.s).join(' ');
+    achou = true;
+    const hs = its.find((i) => /^saldo/i.test(i.s.trim()) && Math.abs(i.y - hc.y) < 3);
+    const cols = [['c', cen(hc)], ['d', cen(hd)]]; if (hs) cols.push(['s', cen(hs)]);
+    const xmin = Math.min(hc.x, hd.x) - 30, abaixo = its.filter((i) => i.y < hc.y - 2), rows = [];
+    for (const i of abaixo) {
+      const t = i.s.trim(); if (!reV.test(t) || cen(i) < xmin) continue;
+      const col = cols.reduce((a, b) => Math.abs(cen(i) - b[1]) < Math.abs(cen(i) - a[1]) ? b : a)[0];
+      if (col !== 's') rows.push({ y: i.y, v: numBR(t.replace(/[DC-]\s*$/, '').replace(/[-−]/g, '')), col, txt: [], data: '' });
+    }
+    const perto = (y) => { let m = null; for (const r of rows) if (Math.abs(r.y - y) <= 7 && (!m || Math.abs(r.y - y) < Math.abs(m.y - y))) m = r; return m; };
+    for (const i of abaixo) {
+      const t = i.s.trim(); if (!t || reV.test(t) || i.x + i.w > xmin + 10) continue;
+      const r = perto(i.y); if (!r) continue;
+      const d = t.match(reD);
+      if (d) r.data = (d[3].length === 2 ? '20' + d[3] : d[3]) + '-' + pad(d[2]) + '-' + pad(d[1]);
+      else if (!/^[\d\s.\/-]+$/.test(t)) r.txt.push(i);
+    }
+    rows.sort((a, b) => b.y - a.y);
+    for (const r of rows) {
+      if (r.data) data = r.data;
+      const linhas = []; r.txt.sort((a, b) => b.y - a.y || a.x - b.x).forEach((i) => { const l = linhas[linhas.length - 1]; if (l && Math.abs(l.y - i.y) < 2) l.s += ' ' + i.s; else linhas.push({ y: i.y, s: i.s }); });
+      const desc = linhas.map((l) => l.s.replace(/\s+/g, ' ').trim().replace(/^(DES|REM):\s*/i, '').replace(/\s\d{2}\/\d{2}$/, '')).filter(Boolean).join(' · ');
+      if (!desc || /^total\b|saldo (anterior|do dia|final|dispon)/i.test(desc) || !Number.isFinite(r.v) || !r.v) continue;
+      out.push({ data: data || ref + '-01', desc, v: r.col === 'c' ? r.v : -r.v, fit: '' });
+    }
+  }
+  if (!achou) return null;
+  const banco = (EMISSOR.find(([, re]) => re.test(topo)) || ['outro'])[0], nm = (topo.match(/nome:\s*([A-ZÀ-Ú][A-Za-zÀ-ú]+\s+[A-ZÀ-Ú][A-Za-zÀ-ú]+)/i) || [])[1];
+  if (nm) out.forEach((x) => { if (x.desc.toUpperCase().includes(nm.toUpperCase())) x.propria = true; });
+  out.tabela = true; out.banco = banco;
+  return out;
+}
 async function lerPDF(buf, senha, ref, origem) {
   const lib = await carregarPDF();
   const doc = await lib.getDocument({ data: new Uint8Array(buf), password: senha || undefined, isEvalSupported: false }).promise;
-  const linhas = [];
+  const linhas = [], pags = [];
   for (let p = 1; p <= doc.numPages; p++) {
     const tc = await (await doc.getPage(p)).getTextContent();
-    const its = tc.items.filter((i) => i.str && i.str.trim()).map((i) => ({ x: i.transform[4], y: i.transform[5], s: i.str }));
+    const its = tc.items.filter((i) => i.str && i.str.trim()).map((i) => ({ x: i.transform[4], y: i.transform[5], w: i.width || 0, s: i.str }));
+    pags.push(its.slice());
     its.sort((a, b) => b.y - a.y || a.x - b.x);
     let cur = [], y0 = null;
     const flush = () => { if (cur.length) linhas.push(cur.sort((a, b) => a.x - b.x).map((i) => i.s).join(' ').replace(/\s+/g, ' ').trim()); cur = []; };
     for (const i of its) { if (y0 === null || Math.abs(i.y - y0) > 2.5) { flush(); y0 = i.y; } cur.push(i); }
     flush();
   }
-  return extrairPDF(linhas, ref, origem);
+  return extrairTabela(pags, ref) || extrairPDF(linhas, ref, origem);
 }
 async function abrirPDF(senha) {
   const I = $ed._c; if (!I || !I.pdf) return;
   I.senha = false; I.lendo = true; impForm();
   try {
     if (!ehExtrato(I.origem) && !I.mes) I.mes = st.mes;
-    I.brutos = await lerPDF(I.pdf.slice(0), senha, I.mes || st.mes, I.origem); I.lendo = false; montarImp(I); impForm();
+    I.brutos = await lerPDF(I.pdf.slice(0), senha, I.mes || st.mes, I.origem); I.lendo = false;
+    if (I.brutos.tabela) { const o = 'conta-' + I.brutos.banco; if (!ehExtrato(I.origem)) I.mes = ''; if (!ehExtrato(I.origem) || I.origem === 'conta-outro') I.origem = ORIGENS.some((x) => x[0] === o) ? o : 'conta-outro'; I.tipoArq = 'extrato'; }
+    else I.tipoArq = '';
+    montarImp(I); impForm();
     if (!I.txs.length) erro('Abri o PDF, mas não reconheci os lançamentos. Me mande este arquivo para eu ajustar a leitura ao formato do seu banco.');
   } catch (e) {
     I.lendo = false;
@@ -661,8 +784,10 @@ async function importar() {
   const I = $ed._c, go = document.getElementById('i-go'), orig = ORIGENS.find((o) => o[0] === I.origem) || ORIGENS[0], forma = orig[2], grupo = orig[3], novas = {};
   const fila = I.txs.map((t, i) => ({ t, on: document.getElementById('i-s-' + i).checked, esc: document.getElementById('i-c-' + i).value })).filter((x) => x.on);
   if (!fila.length) return erro('Marque pelo menos um lançamento.');
+  const tirar = (I.pagExt || []).filter((p, k) => { const c = document.getElementById('i-pe-' + k); return c && c.checked; });
   go.disabled = true; let n = 0, b = 0, feitos = 0;
   try {
+    for (const p of tirar) await C.lanc.doc(p.id).delete();
     for (const { t, esc: e } of fila) {
       go.textContent = 'Importando ' + (++feitos) + ' de ' + fila.length + '…';
       const mes = I.mes || t.data.slice(0, 7), x = e === '__m' ? achar(t.match) : null;
@@ -675,18 +800,18 @@ async function importar() {
     if (Object.keys(novas).length) await db.doc('config/categorias').set({ mapa: { ...aprend, ...novas } });
     if (I.mes) st.mes = I.mes;
     st.abertos.add(grupo);
-    fechar(); toast('📥 ' + n + (n === 1 ? ' lançamento importado' : ' lançamentos importados') + (b ? ' e ' + b + (b === 1 ? ' conta baixada' : ' contas baixadas') : '') + '. Tudo no lugar!');
+    fechar(); toast('📥 ' + n + (n === 1 ? ' lançamento importado' : ' lançamentos importados') + (b ? ' e ' + b + (b === 1 ? ' conta baixada' : ' contas baixadas') : '') + (tirar.length ? '. Tirei ' + tirar.length + ' pagamento(s) de fatura do extrato para não contar duas vezes' : '') + '. Tudo no lugar!');
   } catch (e2) { go.disabled = false; go.textContent = 'Importar marcados'; falha(e2); }
 }
 
 /* ---------- atualização automática ---------- */
 const ATUALIZA_BASE = 'https://raw.githubusercontent.com/gessycacosta150-jpg/gege-finance/main/app/';
-const LINK_APK = 'https://github.com/gessycacosta150-jpg/gege-finance/releases/latest';
+const LINK_APK = 'https://github.com/gessycacosta150-jpg/contas-app/releases/latest';
 function avisoAtualizacao(tipo, j) {
   let el = document.getElementById('upd');
   if (!el) { el = document.createElement('div'); el.id = 'upd'; el.className = 'undo'; el.style.bottom = 'auto'; el.style.top = 'calc(10px + env(safe-area-inset-top,0px))'; el.style.zIndex = '25'; document.body.appendChild(el); }
   el.innerHTML = tipo === 'pronta' ? `<span>🎁 Versão ${esc(j.nome)} do Gege Finance chegou! ${esc(j.novidades || '')}</span><button data-act="upd-aplicar">Atualizar agora</button><button data-act="upd-fechar" aria-label="Fechar">✕</button>`
-    : `<span>📲 A versão ${esc(j.nome)} precisa instalar o app de novo, por cima. Seus dados continuam.</span><a class="btn" style="text-decoration:none" href="${LINK_APK}" target="_blank" rel="noopener">Baixar</a><button data-act="upd-fechar" aria-label="Fechar">✕</button>`;
+    : `<span>📲 A versão ${esc(j.nome)} precisa instalar o app de novo, por cima (com o GitHub logado). Seus dados continuam.</span><a class="btn" style="text-decoration:none" href="${LINK_APK}" target="_blank" rel="noopener">Baixar</a><button data-act="upd-fechar" aria-label="Fechar">✕</button>`;
   el.hidden = false;
 }
 async function buscarAtualizacao(manual) {
@@ -988,6 +1113,7 @@ document.addEventListener('change', async (ev) => {
   if (el.id === 'f-file') { if (el.files && el.files[0]) lerArquivo(el.files[0]).catch(() => erro('Não foi possível abrir o arquivo.')); return; }
   if (el.dataset.chg === 'imp') { const I = $ed._c; I.origem = val('f-origem'); I.mes = val('f-impmes'); if (I.brutos) { montarImp(I); impForm(); } return; }
   if (el.dataset.act === 'sel') { el.checked ? st.sel.add(el.dataset.k) : st.sel.delete(el.dataset.k); render(); return; }
+  if (el.dataset.act === 'plano-ck') { if (canWrite) marcarPlano(+el.dataset.k, el.checked); return; }
   if (el.dataset.act === 'sel-grp') { const its = visiveis(st.tab === 'recebimentos' ? 'entrada' : 'saida').filter((x) => x.grupo === el.dataset.k).map(key); its.forEach((x) => el.checked ? st.sel.add(x) : st.sel.delete(x)); render(); return; }
   if (el.dataset.act !== 'toggle') return;
   const x = achar(el.dataset.k); if (!x) return;
@@ -1062,6 +1188,7 @@ function restaurar() {
   db.doc('config/ajustes').onSnapshot((d) => { cfg = d.exists ? (d.data() || {}) : {}; if (cfgOk) render(); cfgOk = true; });
   assistirVisual(); aplicarVisual();
   db.doc('config/categorias').onSnapshot((d) => { aprend = d.exists ? (d.data().mapa || {}) : {}; });
+  db.doc('config/plano').onSnapshot((d) => { plano = d.exists ? (d.data() || {}) : {}; render(); });
   const sub = (col, set) => col.onSnapshot((sn) => { set(sn.docs.map((d) => ({ ...d.data(), id: d.id }))); loaded = Math.max(loaded, 0); render(); });
   loaded = 3;
   setTimeout(() => { try { localStorage.setItem('gege-tentativas', '0'); } catch (e) {} buscarAtualizacao(false); }, 3000);
