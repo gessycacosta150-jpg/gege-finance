@@ -8,7 +8,7 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
 </head><body>
 <script>
-window.GEGE_V = 5; window.GEGE_NATIVO = 3; window.GEGE_NOME = '1.4';
+window.GEGE_V = 6; window.GEGE_NATIVO = 3; window.GEGE_NOME = '1.5';
 (function () {
   try {
     if (window.__gegeAtual) return;
@@ -199,7 +199,7 @@ h2{font-family:var(--font-d);font-weight:700;font-size:1.15rem;margin:0;line-hei
 .painel .p-bar{background:rgba(255,255,255,.14);border-radius:14px;padding:8px 10px;font-size:.84rem;display:grid;gap:6px}
 .painel .p-bar .muted{color:inherit;opacity:.85}
 .painel .bar2{height:10px;border-radius:99px;background:rgba(255,255,255,.3);overflow:hidden}.painel .bar2 i{display:block;height:100%;border-radius:99px}
-.dobra{display:flex;justify-content:space-between;align-items:center;width:100%;font:inherit;font-weight:700;color:inherit;cursor:pointer;text-align:left;border:0}
+.dobra{display:flex!important;flex-direction:row!important;justify-content:space-between!important;align-items:center;width:100%;gap:10px;font:inherit;font-weight:700;color:inherit;cursor:pointer;text-align:left;border:0}
 .dobra-t{all:unset;display:flex;justify-content:space-between;align-items:center;cursor:pointer;width:100%}
 .dobra-t b,.dobra b{color:var(--accent);font-size:.92rem;white-space:nowrap}
 @media (max-width:360px){.painel .p-saldos{grid-template-columns:1fr}}
@@ -230,6 +230,9 @@ h2{font-family:var(--font-d);font-weight:700;font-size:1.15rem;margin:0;line-hei
 .analise .ofs button span{display:grid;min-width:0}.analise .ofs button span b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.9rem}
 .analise .ofs small{font-size:.74rem;opacity:.7;display:block}
 .analise .ofs em{font-style:normal;font-weight:800;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+button.rec-ir{font:inherit;font-weight:600;border:0;width:100%;text-align:left;cursor:pointer;grid-template-columns:auto minmax(0,1fr) auto}
+.rec-ir>i{font-style:normal;font-size:1.4rem;opacity:.6}
+.rec-ir:active{transform:scale(.99)}
 </style>
 
 <div class="app" id="view"><div class="card"><div class="empty" id="boot">Carregando suas contas…</div></div></div>
@@ -314,7 +317,7 @@ function rowHtml(x) {
   return `<div class="row${x.pago ? ' done' : ''}">
     ${st.selMode ? `<input type="checkbox" data-act="sel" data-k="${esc(key(x))}" ${st.sel.has(key(x)) ? 'checked' : ''} aria-label="Selecionar ${esc(x.desc)}" style="accent-color:var(--accent)">` : `<input type="checkbox" data-act="toggle" data-k="${esc(key(x))}" ${x.pago ? 'checked' : ''} ${canWrite ? '' : 'disabled'} aria-label="${x.tipo === 'entrada' ? 'Recebido' : 'Pago'}: ${esc(x.desc)}">`}
     <button class="what" data-act="edit" data-k="${esc(key(x))}"><strong><span class="emo">${EMO[x.cat] || (x.tipo === 'entrada' ? '💰' : '🧾')}</span>${esc(x.desc)}</strong><span>${meta}</span></button>
-    <div class="val"><span>${brl(x.valor)}</span><span class="pill ${k}">${esc(t)}</span></div></div>`;
+    <div class="val"><span>${brl(x.valor)}</span><span class="pill ${k}">${esc(t)}</span>${DUPK.has(key(x)) ? '<span class="pill bad" title="Possível duplicada">⚠️ duplicada?</span>' : ''}</div></div>`;
 }
 const stepHtml = () => `<div class="step"><button data-act="mes" data-k="-1" aria-label="Mês anterior">‹</button><div>${MESES[+st.mes.slice(5)-1]}<small>${st.mes.slice(0,4)}</small></div><button data-act="mes" data-k="1" aria-label="Próximo mês">›</button></div>`;
 const titulo = (t, s) => `<div><h1>${t}</h1><p class="sub">${s}</p></div>`;
@@ -467,7 +470,19 @@ async function salvarCfg() {
   try { await db.doc('config/ajustes').set(novo); cfg = novo; st.tom = null; toast(novo.tom === 'direto' ? 'Configurações salvas.' : '⚙️ Prontinho, configurações salvas!'); ir('inicio'); }
   catch (e) { toast('Não foi possível salvar agora. Tente de novo em instantes.'); }
 }
-const recHtml = (m) => `<div class="recs">${recados(m).map(([k,e,t]) => `<div class="rec ${k}"><b>${e}</b><span>${esc(t)}</span></div>`).join('')}</div>`;
+/* cada recado leva direto para onde está o problema */
+function destinoRecado(e, t) {
+  const cat = CATS.find((c) => t.startsWith(c));
+  if (e === '⏰') return { tab: 'despesas', filtro: 'atrasadas', msg: 'contas atrasadas' };
+  if ((e === '🧨' || e === '🫣') && cat) return { tab: 'despesas', q: cat, msg: cat };
+  if (e === '💳') return { tab: 'despesas', q: 'cartão', msg: 'despesas no cartão' };
+  if (e === '✋') return { tab: 'recebimentos', filtro: 'pendentes', msg: 'entradas que ainda não caíram' };
+  if (e === '📉' || e === '📈') return { tab: 'estatisticas', msg: 'comparação com o mês passado' };
+  if (e === '👑') return { tab: 'despesas', filtro: 'pagas', msg: 'contas pagas' };
+  if (e === '🐷') return { tab: 'objetivos', msg: 'seus objetivos' };
+  return { tab: 'despesas', msg: 'despesas do mês' };
+}
+const recHtml = (m) => `<div class="recs">${recados(m).map(([k,e,t]) => { const d = destinoRecado(e, t); return `<button class="rec ${k} rec-ir" data-act="rec-ir" data-tab="${d.tab}" data-filtro="${esc(d.filtro || '')}" data-q="${esc(d.q || '')}" data-msg="${esc(d.msg)}" aria-label="${esc(t)}. Toque para ver"><b>${e}</b><span>${esc(t)}</span><i aria-hidden="true">›</i></button>`; }).join('')}</div>`;
 
 /* ---------- screens ---------- */
 function telaLista(tipo) {
@@ -478,7 +493,7 @@ function telaLista(tipo) {
   return titulo(tipo === 'entrada' ? 'Recebimentos' : 'Despesas', tipo === 'entrada' ? 'Suas entradas de dinheiro' : 'Contas a pagar e gastos do mês') + stepHtml() + (tipo === 'entrada' ? '' : recHtml(st.mes)) +
     `<input class="search" id="q" type="search" placeholder="${tipo === 'entrada' ? 'Buscar recebimento…' : 'Buscar despesa…'}" value="${esc(st.q)}" aria-label="Buscar">
     <div class="card"><div class="stats" style="grid-template-columns:repeat(${labs.length},minmax(0,1fr))">${labs.map(([k,l,c]) => `<button class="stat" data-act="filtro" data-k="${k}" aria-pressed="${st.filtro === k}"><b>${g[k].length}</b><span class="${c}">${brl(sum(g[k]))}</span><em>${l}</em></button>`).join('')}</div></div>
-    ${canWrite ? '<button class="btn ghost wide" data-act="imp-open">📥 Importar extrato ou fatura</button>' : ''}
+    ${canWrite ? '<div class="g2"><button class="btn ghost" data-act="imp-open">📥 Importar extrato, fatura ou Excel</button><button class="btn ghost" data-act="xls-exp">📗 Exportar para Excel</button></div>' : '<button class="btn ghost wide" data-act="xls-exp">📗 Exportar para Excel</button>'}
     ${dupHtml(tipo)}
     <div class="card"><div class="head"><h2>${tipo === 'entrada' ? 'Seus recebimentos' : 'Suas despesas'}</h2>${canWrite && all.length ? `<button class="link" data-act="sel-modo">${st.selMode ? 'Concluir' : '☑️ Selecionar'}</button>` : `<span class="muted">${all.length} ${all.length === 1 ? 'item' : 'itens'}</span>`}</div><div class="rows" id="lista">${listaHtml(tipo)}</div></div>
     ${selbarHtml(tipo)}`;
@@ -821,6 +836,81 @@ function lerOFX(t) {
   let m; while ((m = re.exec(t))) { const b = m[1], v = numBR(tag(b,'TRNAMT')), d = dataISO(tag(b,'DTPOSTED')); if (d && Number.isFinite(v) && v) out.push({ data: d, desc: tag(b,'MEMO') || tag(b,'NAME') || 'Sem descrição', v, fit: tag(b,'FITID') }); if (!m[0]) re.lastIndex++; }
   return out;
 }
+let xlsxP = null;
+function carregarXLSX() {
+  if (window.XLSX) return Promise.resolve(window.XLSX);
+  if (xlsxP) return xlsxP;
+  const add = (src) => new Promise((ok, no) => { const sc = document.createElement('script'); sc.src = src; sc.onload = () => window.XLSX ? ok(window.XLSX) : no(new Error('xlsx')); sc.onerror = () => { sc.remove(); no(new Error('xlsx')); }; document.head.appendChild(sc); });
+  const fontes = ['./lib/xlsx.full.min.js', 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'];
+  xlsxP = fontes.reduce((p, src) => p.catch(() => add(src)), Promise.reject(new Error('xlsx')));
+  xlsxP.catch(() => { xlsxP = null; });
+  return xlsxP;
+}
+/* planilha "livre": em cada linha, o primeiro texto é a descrição e o primeiro número à direita é o valor */
+const ENTRADA_RX = /sal[aá]rio|renda|receb|entrada|rendimento|pr[oó].?labore|reembolso|aluguel receb/i;
+const FORA_RX = /^(total|subtotal|saldo|soma|resumo|m[eé]dia)\b/i;
+function planilhaLivre(linhas, ref) {
+  const out = [], hojeRef = ref + '-01', secao = {}, donos = [], eu = sem3(cfg.nome || 'Gessyca') ? String(cfg.nome || 'Gessyca').toLowerCase().normalize('NFD').replace(/[^a-z ]/g, '').trim().split(' ')[0] : '';
+  // blocos lado a lado com dono ("Orçamento pessoal mensal - Ronaldo"): só lê o bloco de quem usa o app
+  linhas.forEach((l) => (l || []).forEach((c, i) => { const m = typeof c === 'string' && c.match(/or[çc]amento[^-–]*[-–]\s*([A-Za-zÀ-ú]+)/i); if (m) donos.push([i, m[1].toLowerCase().normalize('NFD').replace(/[^a-z]/g, '')]); }));
+  donos.sort((a, b) => a[0] - b[0]);
+  const donoDe = (i) => { let d = ''; for (const [c, n] of donos) if (c <= i + 1) d = n; return d; };
+  const meu = (i) => !eu || !donos.length || !donoDe(i) || donoDe(i) === eu;
+  const ehData = (c) => c instanceof Date || (typeof c === 'string' && /^\d{1,2}\/\d{1,2}\/\d{2,4}$/.test(c.trim()));
+  const iso = (c) => c instanceof Date ? c.getFullYear() + '-' + pad(c.getMonth() + 1) + '-' + pad(c.getDate()) : dataISO(c);
+  const num = (c) => typeof c === 'number' ? c : typeof c === 'string' && /^\s*-?\s*(R\$)?\s*-?\d[\d.]*(,\d+)?\s*$/.test(c) ? numBR(c) : NaN;
+  const ehTexto = (c) => typeof c === 'string' && c.length >= 2 && !ehData(c) && Number.isNaN(num(c)) && /[a-zà-ú]/i.test(c);
+  for (const l of linhas) {
+    const cel = (l || []).map((c) => typeof c === 'string' ? c.replace(/\s+/g, ' ').trim() : c), dc = cel.find(ehData), data = (dc && iso(dc)) || hojeRef;
+    for (let i = 0; i < cel.length; i++) {
+      if (!ehTexto(cel[i]) || !meu(i)) continue;
+      let v = NaN, j = i + 1;
+      for (; j < cel.length && !ehTexto(cel[j]); j++) { const n = num(cel[j]); if (Number.isFinite(n)) { v = n; break; } }
+      const t = cel[i];
+      if (!Number.isFinite(v)) { // título de bloco: define se o que vem abaixo é entrada ou despesa
+        if (/^(previsto|real|esperado|estimado|valor|diferen|100%)/i.test(t) || t.length > 60) continue;
+        secao[i] = /renda|receita|entrada|receb|ganho/i.test(t) ? 'e' : 's'; continue; }
+      if (!v || FORA_RX.test(t) || /^(bradesco|santander|nubank|ita[uú]|caixa|inter|c6|pix|d[eé]bito|cr[eé]dito)$/i.test(t) || /total|proje[çc]|saldo|restante|diferen|^(previsto|real|valor|m[eê]s)$/i.test(t)) continue;
+      const ent = ENTRADA_RX.test(t) || secao[i] === 'e';
+      out.push({ data, desc: t, v: v < 0 ? v : ent ? Math.abs(v) : -Math.abs(v), fit: '' });
+    }
+  }
+  return out;
+}
+const sem3 = (s) => String(s).toLowerCase().normalize('NFD').replace(/[^a-z]/g, '').slice(0, 3);
+async function lerExcel(buf, ref) {
+  const X = await carregarXLSX(), wb = X.read(new Uint8Array(buf), { type: 'array', cellDates: true });
+  let melhor = [], livre = false;
+  for (const n of wb.SheetNames) { if (/resumo/i.test(n)) continue;
+    const csv = X.utils.sheet_to_csv(wb.Sheets[n], { FS: ';', RS: '\n', dateNF: 'dd/mm/yyyy', rawNumbers: true });
+    let l = lerCSV(csv.split('\n').map((r) => r.replace(/(^|;)(-?\d+)\.(\d+)(?=;|$)/g, '$1$2,$3')).join('\n')), lv = false;
+    if (!l.length) { l = planilhaLivre(X.utils.sheet_to_json(wb.Sheets[n], { header: 1, raw: true, defval: '' }), ref); lv = true; }
+    const mAba = MES3[sem3(n)], doMesRef = mAba && mAba === +ref.slice(5);
+    if (doMesRef && l.length) { melhor = l; livre = lv; break; }
+    if (l.length > melhor.length) { melhor = l; livre = lv; } }
+  melhor.livre = livre;
+  return melhor;
+}
+const linhasExcel = (meses) => meses.flatMap((m) => doMes(m).sort(ordem).map((x) => ({ 'Mês': m.slice(5) + '/' + m.slice(0, 4), 'Data': x.venc ? x.venc.slice(8) + '/' + x.venc.slice(5, 7) + '/' + x.venc.slice(0, 4) : '01/' + m.slice(5) + '/' + m.slice(0, 4), 'Tipo': x.tipo === 'entrada' ? 'Entrada' : 'Despesa', 'Descrição': x.desc, 'Categoria': x.cat || '', 'Forma': x.forma || '', 'Valor': x.tipo === 'entrada' ? +x.valor : -(+x.valor), 'Situação': x.pago ? (x.tipo === 'entrada' ? 'Recebido' : 'Pago') : 'Pendente', 'Grupo': x.grupo || '', 'Parcela': parc(x) || '', 'Repete': x.rid ? 'Sim' : '', 'Observação': x.obs || '' })));
+async function exportarExcel() {
+  try {
+    const X = await carregarXLSX(), ms = lanc.map((x) => x.mes).concat(rec.map((r) => r.inicio), [st.mes]).filter(Boolean).sort();
+    const meses = []; for (let m = ms[0]; m <= st.mes || m <= ms[ms.length - 1]; m = addM(m, 1)) { meses.push(m); if (meses.length > 60) break; }
+    const wb = X.utils.book_new(), l = linhasExcel(meses);
+    const ws = X.utils.json_to_sheet(l); ws['!cols'] = [8, 11, 9, 40, 26, 22, 12, 10, 32, 8, 7, 30].map((w) => ({ wch: w }));
+    X.utils.book_append_sheet(wb, ws, 'Lançamentos');
+    const res = meses.map((m) => { const a = doMes(m), e = a.filter((x) => x.tipo === 'entrada'), s = a.filter((x) => x.tipo !== 'entrada');
+      return { 'Mês': m.slice(5) + '/' + m.slice(0, 4), 'Renda': sum(e), 'Despesas': sum(s), 'Saldo previsto': sum(e) - sum(s), 'Recebido': sum(e.filter((x) => x.pago)), 'Pago': sum(s.filter((x) => x.pago)), 'Saldo até agora': sum(e.filter((x) => x.pago)) - sum(s.filter((x) => x.pago)) }; });
+    const wr = X.utils.json_to_sheet(res); wr['!cols'] = [9, 13, 13, 15, 13, 13, 15].map((w) => ({ wch: w })); X.utils.book_append_sheet(wb, wr, 'Resumo por mês');
+    const nome = 'gege-finance-' + hoje() + '.xlsx';
+    if (typeof nativo === 'function' && nativo()) {
+      const { Filesystem, Share } = window.Capacitor.Plugins, b64 = X.write(wb, { bookType: 'xlsx', type: 'base64' });
+      const r = await Filesystem.writeFile({ path: nome, data: b64, directory: 'CACHE' });
+      await Share.share({ title: 'Planilha do Gege Finance', files: [r.uri], dialogTitle: 'Salvar ou enviar a planilha…' });
+    } else X.writeFile(wb, nome);
+    toast('📗 Planilha Excel gerada com ' + l.length + ' lançamentos.');
+  } catch (e) { if (!/cancel/i.test(String(e && (e.message || e)))) toast(e && e.message === 'xlsx' ? '⚠️ Não consegui carregar o Excel. Confira a internet.' : '⚠️ Não consegui gerar a planilha agora.'); }
+}
 function lerCSV(t) {
   const linhas = t.split(/\r?\n/).filter((l) => l.trim()); if (linhas.length < 2) return [];
   const sem = (x) => x.toLowerCase().normalize('NFD').replace(/[^a-z ]/g,'').trim();
@@ -849,7 +939,9 @@ function montarImp(I) {
     const tx = { id: 'imp-' + hash(base + '|' + k), data: x.data, desc: x.desc.replace(/\s+/g,' ').slice(0, 80).toUpperCase(), valor: Math.round(Math.abs(x.v) * 100) / 100, tipo: x.v < 0 ? 'saida' : 'entrada', sel: true, nota: '', match: null };
     tx.auto = sugerir(tx.desc, tx.tipo);
     const mes = I.mes || tx.data.slice(0, 7);
+    const jaTem = !lanc.some((q) => q.id === tx.id || q.impId === tx.id) && [tx.data.slice(0, 7), mes].flatMap((mm) => doMes(mm)).find((q) => !usados.has(key(q)) && (q.tipo === 'entrada') === (tx.tipo === 'entrada') && Math.abs((+q.valor || 0) - tx.valor) < 0.011 && ((q.venc || '') === tx.data || (!q.venc && q.mes === tx.data.slice(0, 7))) && parecidos(q.desc, tx.desc));
     if (lanc.some((q) => q.id === tx.id || q.impId === tx.id)) { tx.sel = false; tx.nota = 'já importado antes'; }
+    else if (jaTem) { usados.add(key(jaTem)); tx.sel = false; tx.nota = 'já está no app (' + jaTem.desc + ')'; }
     else if (cartao && tx.tipo === 'entrada') { tx.sel = false; tx.nota = 'pagamento ou estorno na fatura'; }
     else if (!cartao && x.propria) { tx.sel = false; tx.nota = '🔁 transferência entre contas suas: não é ' + (tx.tipo === 'entrada' ? 'renda' : 'gasto') + ' (marque se quiser lançar)'; }
     else if (!cartao && tx.tipo === 'saida' && PAG_CARTAO.test(tx.desc)) { const k = (EMISSOR.find(([, re]) => re.test(tx.desc)) || [])[0], g = k && faturaLanc(k, mes);
@@ -867,11 +959,11 @@ function impForm() {
   const lin = I.txs.map((t, i) => `<div class="irow"><input type="checkbox" id="i-s-${i}" ${t.sel ? 'checked' : ''} aria-label="Importar ${esc(t.desc)}"><div><strong>${esc(t.desc)}</strong><small>${dia(t.data)}${t.nota ? ' · ' + esc(t.nota) : ''}</small></div><b class="${t.tipo === 'entrada' ? 'pos' : ''}">${t.tipo === 'entrada' ? '+' : ''}${brl(t.valor)}</b>
     <select id="i-c-${i}" aria-label="O que fazer com ${esc(t.desc)}">${t.match ? `<option value="__m">✔ Dar baixa em: ${esc(t.matchNome)}</option>` : ''}${(t.tipo === 'entrada' ? CATS_IN : CATS).map((c) => `<option${!t.match && c === t.auto ? ' selected' : ''}>${esc(c)}</option>`).join('')}</select></div>`).join('');
   sheet(`<h2>📥 Importar extrato ou fatura</h2>
-    <p class="muted" style="margin:0">Baixe o arquivo no app ou site do banco, em OFX, CSV ou PDF, e escolha aqui. Nada é lançado antes de você conferir.</p>
+    <p class="muted" style="margin:0">Baixe o arquivo no app ou site do banco, em OFX, CSV, PDF ou Excel, e escolha aqui. Nada é lançado antes de você conferir.</p>
     <label class="f">De onde é o arquivo<select id="f-origem" data-chg="imp">${ORIGENS.map(([k, l]) => `<option value="${k}"${k === I.origem ? ' selected' : ''}>${l}</option>`).join('')}</select></label>
     <label class="f">Lançar tudo em um mês só (opcional)<input id="f-impmes" type="month" data-chg="imp" value="${esc(I.mes)}"></label>
     <p class="muted" style="margin:0">Deixe vazio para usar a data de cada lançamento. Para fatura de cartão, escolha o mês em que a fatura é paga.</p>
-    <label class="f">Arquivo<input id="f-file" type="file" accept=".ofx,.qfx,.csv,.txt,.pdf,text/csv,application/x-ofx,application/pdf"></label>
+    <label class="f">Arquivo<input id="f-file" type="file" accept=".ofx,.qfx,.csv,.txt,.pdf,.xlsx,.xls,text/csv,application/x-ofx,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"></label>
     ${I.lendo ? '<div class="empty">📄 Lendo o PDF…</div>' : ''}
     ${I.senha ? `<label class="f">Este PDF tem senha (nos bancos costuma ser parte do CPF)<input id="f-senha" type="password" autocomplete="off"></label><button class="btn" data-act="imp-pdf">Abrir PDF</button>` : ''}
     ${I.brutos ? (() => { const e = I.txs.filter((t) => t.tipo === 'entrada'), s = I.txs.filter((t) => t.tipo !== 'entrada'), soma = (l) => brl(l.reduce((a, t) => a + t.valor, 0));
@@ -994,6 +1086,10 @@ async function abrirPDF(senha) {
 async function lerArquivo(file) {
   const I = $ed._c, buf = await file.arrayBuffer(); let t;
   if (/\.pdf$/i.test(file.name) || file.type === 'application/pdf') { I.pdf = buf; I.nome = file.name; I.brutos = null; I.txs = []; return abrirPDF(''); }
+  if (/\.xlsx?$/i.test(file.name)) { try { I.brutos = await lerExcel(buf, I.mes || st.mes); if (I.brutos.livre && !ehExtrato(I.origem)) I.origem = 'conta-outro'; } catch (e) { return erro(e && e.message === 'xlsx' ? 'Não consegui carregar o leitor de Excel. Confira a internet.' : 'Não consegui ler esta planilha.'); }
+    I.nome = file.name; if (!ehExtrato(I.origem) && !I.mes) I.mes = st.mes; montarImp(I); impForm();
+    if (!I.txs.length) erro('Não achei lançamentos na planilha. Em cada linha, coloque a descrição e, na coluna da frente, o valor.');
+    else if (I.brutos.livre) toast('📗 Li a planilha: descrição e valor da frente. Sem data, entram no mês escolhido acima. Salário e rendas viram entradas; o resto, despesas.'); return; }
   try { t = new TextDecoder('utf-8', { fatal: true }).decode(buf); } catch (e) { t = new TextDecoder('windows-1252').decode(buf); }
   I.brutos = /<OFX|<STMTTRN/i.test(t) ? lerOFX(t) : lerCSV(t); I.nome = file.name;
   if (!ehExtrato(I.origem) && !I.mes) I.mes = st.mes;
@@ -1265,18 +1361,21 @@ function parecidos(a, b) {
   const inter = A.filter((w) => B.includes(w)).length; return inter / Math.min(A.length, B.length) >= 0.5;
 }
 const assinDup = (a, b) => [a.mes, a.desc, b.desc, (+a.valor).toFixed(2)].sort().join('|');
+let DUPK = new Set();
 function duplicadas(tipo) {
-  const ign = (cfg.naoDup || []), it = doMes(st.mes).filter((x) => (tipo === 'entrada') === (x.tipo === 'entrada') && +x.valor > 0), out = [];
-  for (let i = 0; i < it.length; i++) for (let j = i + 1; j < it.length; j++) {
-    const a = it[i], b = it[j];
-    if (Math.abs(+a.valor - +b.valor) < 0.005 && parecidos(a.desc, b.desc) && !ign.includes(assinDup(a, b)) && !(a.rid && a.rid === b.rid)) out.push([a, b]);
-  }
-  return out.slice(0, 12);
+  const ign = (cfg.naoDup || []), mesmo = (x) => (tipo === 'entrada') === (x.tipo === 'entrada') && +x.valor > 0;
+  const it = doMes(st.mes).filter(mesmo), out = [], vistos = new Set();
+  const viz = [addM(st.mes, -1), addM(st.mes, 1)].flatMap((m) => doMes(m)).filter((x) => mesmo(x) && x.imp);
+  const testa = (a, b) => { const s = assinDup(a, b); if (vistos.has(s)) return; if (Math.abs(+a.valor - +b.valor) < 0.005 && parecidos(a.desc, b.desc) && !ign.includes(s) && !(a.rid && a.rid === b.rid)) { vistos.add(s); out.push([a, b]); } };
+  for (let i = 0; i < it.length; i++) for (let j = i + 1; j < it.length; j++) testa(it[i], it[j]);
+  for (const a of it.filter((x) => !x.imp)) for (const b of viz) testa(a, b);
+  const peso = ([a, b]) => (!!a.imp !== !!b.imp ? 0 : 1) + (a.desc === b.desc && a.venc === b.venc ? 1 : 0);
+  return out.sort((p, q) => peso(p) - peso(q)).slice(0, 20);
 }
 function dupHtml(tipo) {
-  const d = duplicadas(tipo); if (!d.length) return '';
-  const lin = (x) => `${esc(x.desc)}${x.grupo ? ' <span class="muted">(' + esc(x.grupo) + ')</span>' : ''}${x.pago ? ' ✔' : ''}`;
-  return `<div class="card"><div><h2>🔍 Possíveis duplicadas (${d.length})</h2><p class="sub">Mesmo valor e nomes parecidos neste mês. Confira antes de apagar.</p></div>
+  const d = duplicadas(tipo); DUPK = new Set(d.flat().map(key)); if (!d.length) return '';
+  const lin = (x) => `${esc(x.desc)}${x.grupo ? ' <span class="muted">(' + esc(x.grupo) + ')</span>' : x.rid ? ' <span class="muted">(lançada por você, repete todo mês)</span>' : ' <span class="muted">(lançada por você)</span>'}${x.mes !== st.mes ? ' <span class="muted">· ' + nomeM(x.mes) + '</span>' : ''}${x.pago ? ' ✔' : ''}`;
+  return `<div class="card"><div><h2>🔍 Possíveis duplicadas (${d.length})</h2><p class="sub">Mesmo valor e nomes parecidos (inclusive com fatura ou extrato importado do mês vizinho). Na lista, elas aparecem com ⚠️. Confira antes de apagar.</p></div>
     ${d.map(([a, b]) => `<div class="dup"><div><b>${brl(a.valor)}</b> · ${lin(a)} <span class="muted">e</span> ${lin(b)}</div><div class="acts"><button class="btn danger" data-act="dup-del" data-k="${esc(key(a))}">Apagar «${esc(a.desc.slice(0, 22))}»</button><button class="btn danger" data-act="dup-del" data-k="${esc(key(b))}">Apagar «${esc(b.desc.slice(0, 22))}»</button><button class="btn ghost" data-act="dup-ok" data-k="${esc(assinDup(a, b))}">Não é duplicada</button></div></div>`).join('')}</div>`;
 }
 async function naoDuplicada(sig) {
@@ -1300,6 +1399,8 @@ document.addEventListener('click', async (ev) => {
   else if (a === 'guardar') { const o = obj.find((q) => q.id === k); if (o) guardarForm(o); }
   else if (a === 'close') fechar();
   else if (a === 'dobra') { const kk = el.dataset.k, atual = kk === 'plano' ? (st.dobra.plano ?? false) : (st.dobra.estrat ?? true); st.dobra[kk] = !atual; render(); }
+  else if (a === 'rec-ir') { ir(el.dataset.tab); st.filtro = el.dataset.filtro || 'todas'; st.q = el.dataset.q || ''; render(); toast('🔎 Mostrando: ' + el.dataset.msg); }
+  else if (a === 'xls-exp') exportarExcel();
   else if (a === 'voltar') { let t = st.pilha.pop(); while (t === st.tab && st.pilha.length) t = st.pilha.pop(); ir(t && t !== st.tab ? t : 'inicio', true); }
   else if (a === 'edit-reset') { const c = $ed._c; if (c && c.kind === 'edit') { editForm(c.x); toast('↺ Campos voltaram como estavam.'); } }
   else if (a === 'close-bg') { if (ev.target === el) fechar(); }
