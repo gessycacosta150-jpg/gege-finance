@@ -8,7 +8,7 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
 </head><body>
 <script>
-window.GEGE_V = 4; window.GEGE_NATIVO = 3; window.GEGE_NOME = '1.3';
+window.GEGE_V = 5; window.GEGE_NATIVO = 3; window.GEGE_NOME = '1.4';
 (function () {
   try {
     if (window.__gegeAtual) return;
@@ -174,6 +174,62 @@ h2{font-family:var(--font-d);font-weight:700;font-size:1.15rem;margin:0;line-hei
 .plano .ck input{margin-top:3px;accent-color:var(--accent);width:18px;height:18px;flex:none}
 .plano .etapas h3{margin:6px 0 2px;font-size:15px}
 .estrategia .sinal small{line-height:1.35}
+.voltar{display:inline-flex;align-items:center;gap:4px;background:none;border:0;color:var(--accent);font:inherit;font-weight:700;font-size:15px;padding:6px 2px;margin:-4px 0 4px;cursor:pointer}
+.ckf .ckl{display:flex;align-items:center;gap:8px;min-height:42px;font-weight:600}
+.ckf .ckl input{width:20px;height:20px;accent-color:var(--accent)}
+.upd-card{outline:2px solid var(--accent);outline-offset:-2px}
+.painel{display:grid;gap:10px;background:linear-gradient(160deg,var(--accent),color-mix(in srgb,var(--accent) 70%,#000));color:var(--accent-ink);border-radius:22px;padding:16px;box-shadow:0 8px 24px color-mix(in srgb,var(--accent) 30%,transparent)}
+.painel .p-tit{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.painel .p-tit span{font-weight:700;opacity:.95}
+.painel .p-tit b{font-size:1.6rem;font-variant-numeric:tabular-nums}
+.painel .p-ent{display:grid;gap:2px;margin-top:6px}
+.painel .p-li{all:unset;display:flex;justify-content:space-between;gap:10px;padding:5px 2px;border-bottom:1px dashed rgba(255,255,255,.28);cursor:pointer;font-size:.93rem}
+.painel .p-li b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.painel .p-h{margin:0;font-size:1.05rem}
+.painel .p-ver{justify-self:start;margin-top:8px;background:rgba(255,255,255,.95);color:var(--accent);border:0;border-radius:99px;padding:7px 14px;font:inherit;font-weight:700;cursor:pointer}
+.painel .p-renda{display:grid}
+.painel .p-sub{font-size:.82rem;opacity:.9;margin-top:4px}
+.painel .p-saldos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.painel .p-box{background:rgba(255,255,255,.95);color:#2a1a22;border-radius:16px;padding:10px 12px;display:grid;gap:2px}
+.painel .p-box small{font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.03em;opacity:.75}
+.painel .p-box b{font-size:1.3rem;font-variant-numeric:tabular-nums}
+.painel .p-box em{font-style:normal;font-size:.74rem;opacity:.7;line-height:1.25}
+.painel .p-box.bom b{color:#1d8a4e}.painel .p-box.mau{background:#ffe3e3}.painel .p-box.mau b{color:#c62828}
+.painel .p-box .neg{color:#c62828}.painel .p-box .pos{color:#1d8a4e}
+.painel .p-bar{background:rgba(255,255,255,.14);border-radius:14px;padding:8px 10px;font-size:.84rem;display:grid;gap:6px}
+.painel .p-bar .muted{color:inherit;opacity:.85}
+.painel .bar2{height:10px;border-radius:99px;background:rgba(255,255,255,.3);overflow:hidden}.painel .bar2 i{display:block;height:100%;border-radius:99px}
+.dobra{display:flex;justify-content:space-between;align-items:center;width:100%;font:inherit;font-weight:700;color:inherit;cursor:pointer;text-align:left;border:0}
+.dobra-t{all:unset;display:flex;justify-content:space-between;align-items:center;cursor:pointer;width:100%}
+.dobra-t b,.dobra b{color:var(--accent);font-size:.92rem;white-space:nowrap}
+@media (max-width:360px){.painel .p-saldos{grid-template-columns:1fr}}
+.plano .sug{margin:0;padding-left:22px;display:grid;gap:6px;line-height:1.4}
+.plano .sug li::marker{color:var(--accent);font-weight:700}
+.goal .etapa{display:grid;gap:2px;margin:8px 0 4px;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,var(--accent) 9%,transparent);font-size:.9rem}
+.goal .etapa small{opacity:.75;line-height:1.35}
+.analise h3{margin:12px 0 2px;font-size:1rem}
+.analise .diag{margin:0;font-weight:600;line-height:1.4}
+.analise .nota{font-weight:800;font-size:1.1rem;padding:4px 10px;border-radius:99px;color:#fff}
+.analise .nota.ok{background:var(--ok)}.analise .nota.warn{background:var(--warn)}.analise .nota.bad{background:var(--bad)}
+.analise .dist span small{display:block;font-weight:400;font-size:.75rem}
+.analise .dbar{grid-column:1/-1;position:relative;display:block;height:10px;border-radius:99px;background:color-mix(in srgb,var(--line) 60%,transparent);overflow:visible}
+.analise .dbar i{display:block;height:100%;border-radius:99px}
+.analise .dbar em{position:absolute;top:-3px;width:2px;height:16px;background:currentColor;opacity:.7}
+.analise .ataque{margin:4px 0 0;padding-left:22px;display:grid;gap:8px}
+.analise .ataque li span{display:block;font-size:.88rem;opacity:.8;line-height:1.35}
+.analise .ataque li::marker{color:var(--accent);font-weight:800}
+.painel .p-box .conta{display:grid;grid-template-columns:1fr auto;gap:1px 8px;font-size:.78rem;margin:4px 0 2px;padding:6px 0 0;border-top:1px dashed rgba(0,0,0,.15);font-variant-numeric:tabular-nums}
+.painel .p-box .conta span:nth-child(even){text-align:right;font-weight:600}
+.painel .p-box .conta span:nth-last-child(-n+2){font-weight:800;border-top:1px solid rgba(0,0,0,.15);padding-top:2px}
+.painel .p-saldos{align-items:start;grid-template-columns:1fr !important}
+.painel .p-box{grid-template-columns:1fr auto;align-items:center}
+.painel .p-box small,.painel .p-box .conta,.painel .p-box em{grid-column:1/-1}
+.painel .p-box b{grid-column:1/-1}
+.analise .ofs{list-style:none;margin:6px 0 2px;padding:0;display:grid;gap:4px}
+.analise .ofs button{all:unset;box-sizing:border-box;width:100%;display:flex;justify-content:space-between;gap:10px;padding:7px 10px;border-radius:12px;background:color-mix(in srgb,var(--bad) 9%,transparent);cursor:pointer}
+.analise .ofs button span{display:grid;min-width:0}.analise .ofs button span b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.9rem}
+.analise .ofs small{font-size:.74rem;opacity:.7;display:block}
+.analise .ofs em{font-style:normal;font-weight:800;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 </style>
 
 <div class="app" id="view"><div class="card"><div class="empty" id="boot">Carregando suas contas…</div></div></div>
@@ -214,12 +270,16 @@ const parseV = (s) => { const t = String(s).trim().replace(/[R$\s]/g,''); if (!t
 const okTab = (t) => t === 'config' || TABS.some((x) => x[0] === t);
 let cfg = {}, cfgOk = false;
 let db = null, C = {}, lanc = [], rec = [], obj = [], loaded = 0, canWrite = true;
-const st = { abertos: new Set(), sel: new Set(), selMode: false, tab: 'inicio', mes: hoje().slice(0,7), filtro: 'todas', q: '', dia: hoje() };
+const st = { dobra: {}, pilha: [], abertos: new Set(), sel: new Set(), selMode: false, tab: 'inicio', mes: hoje().slice(0,7), filtro: 'todas', q: '', dia: hoje() };
 const $view = document.getElementById('view'), $nav = document.getElementById('nav'), $fab = document.getElementById('fab'), $ed = document.getElementById('editor');
 
 /* ---------- data ---------- */
-const ativa = (r, m) => r.inicio <= m && (!r.fim || m <= r.fim) && (r.freq !== 'anual' || +m.slice(5) === +r.mesAnual) && (!r.pt || (+r.pn||1) + diffM(r.inicio, m) <= +r.pt);
-function parc(x) { const r = x.rid && rec.find((q) => q.id === x.rid); if (!r || !r.pt) return x.parc || ''; return ((+r.pn||1) + diffM(r.inicio, x.mes)) + '/' + r.pt; }
+/* parcela só avança quando a do mês anterior foi marcada como paga; se não pagou, repete o mesmo número */
+const pagasAntes = (r, m) => lanc.filter((q) => q.rid === r.id && q.pago && !q.skip && q.mes >= r.inicio && q.mes < m).length;
+const parcNum = (r, m) => (+r.pn || 1) + pagasAntes(r, m);
+const fimAuto = (r) => r.pt && r.fim && r.fim === addM(r.inicio, +r.pt - (+r.pn || 1));
+const ativa = (r, m) => r.inicio <= m && (!r.fim || fimAuto(r) || m <= r.fim) && (r.freq !== 'anual' || +m.slice(5) === +r.mesAnual) && (!r.pt || parcNum(r, m) <= +r.pt);
+function parc(x) { const r = x.rid && rec.find((q) => q.id === x.rid); if (!r || !r.pt) return x.parc || ''; return parcNum(r, x.mes) + '/' + r.pt; }
 function doMes(m) {
   const inst = lanc.filter((x) => x.mes === m), out = inst.filter((x) => !x.skip);
   for (const r of rec) {
@@ -265,58 +325,84 @@ function listaHtml(tipo) {
   return vis.length ? montarLista(vis) : `<div class="empty">${all.length ? 'Nada encontrado com esse filtro.' : tipo === 'entrada' ? 'Nenhum recebimento neste mês. Use o botão + para adicionar.' : 'Nenhuma despesa neste mês. Use o botão + para adicionar.'}</div>`;
 }
 
-/* ---------- plano: dia do pagamento + estratégia de economia ---------- */
+/* ---------- análise automática: refeita a cada mudança, olhando todos os lançamentos ---------- */
 let plano = {};
-const PLANO = {
-  ordem: ['Pagar primeiro FIES, faculdade, CAU, terrenos e contas básicas', 'Transferir R$ 500 para a Caixinha Nubank no mesmo dia do salário', 'Deixar R$ 900 como limite total do cartão (não como valor adicional)', 'Manter Pole Dance e pausar Calistenia até formar um mês de reserva', 'Quando Maikon TV terminar, direcionar os R$ 293,63 para a reserva'],
-  teto: 900, alerta: 0.8, reserva1: 500, reserva2: 800, caixinha: 2200, economia: 550,
-  variaveis: ['Alimentação e mercado', 'Pets e cuidados pessoais', 'Lazer e compras']
-};
-const doSantander = (x) => x.tipo !== 'entrada' && (x.forma === 'Cartão Santander' || /santander/i.test(x.grupo || ''));
-function sinais(m) {
-  const all = doMes(m), sai = all.filter((x) => x.tipo !== 'entrada'), sal = all.filter((x) => x.tipo === 'entrada' && x.cat === 'Salário');
-  const cartao = sum(sai.filter(doSantander)), reserva = sum(sai.filter((x) => x.cat === 'Reserva e investimentos'));
-  const varM = (mm) => sum(doMes(mm).filter((x) => x.tipo !== 'entrada' && (PLANO.variaveis.includes(x.cat) || x.cat === 'Cartões e parcelados' || doSantander(x))));
+const ESSENCIAIS = ['Dívidas antigas (FIES e CAU)', 'Terrenos e IPTU', 'Casa, estudo e transporte'];
+const VARIAVEIS = ['Alimentação e mercado', 'Pets e cuidados pessoais', 'Lazer e compras'];
+const doCartao = (x) => x.tipo !== 'entrada' && (/^cart[aã]o/i.test(x.forma || '') || /^fatura/i.test(x.grupo || ''));
+const arred = (v, p) => Math.max(0, Math.floor(v / p) * p);
+function analise(m) {
+  const all = doMes(m), ent = all.filter((x) => x.tipo === 'entrada'), sai = all.filter((x) => x.tipo !== 'entrada');
+  const E = sum(ent), S = sum(sai), sobra = E - S, ant = [1, 2, 3].map((k) => addM(m, -k));
+  const media = (fn) => { const v = ant.map((mm) => sum(doMes(mm).filter(fn))).filter((x) => x > 0); return v.length >= 2 ? v.reduce((a, b) => a + b, 0) / v.length : 0; };
+  const cartao = sum(sai.filter(doCartao)), mCart = media(doCartao), tetoCfg = +((cfg.plano || {}).teto) || 0;
+  const teto = tetoCfg || (mCart && mCart * 0.9 < 900 ? Math.max(200, arred(mCart * 0.9, 50)) : 900);
+  const reserva = sum(sai.filter((x) => x.cat === 'Reserva e investimentos'));
+  const livre = sobra + reserva, guardar = livre >= 100 ? Math.max(100, arred(livre * 0.5, 50)) : 0;
+  const essPend = sai.filter((x) => !x.pago && ESSENCIAIS.includes(x.cat)).sort(ordem);
+  const ativos = rec.filter((r) => r.tipo !== 'entrada' && ativa(r, m));
+  const opcionais = ativos.filter((r) => VARIAVEIS.includes(r.cat) && !r.pt).sort((a, b) => b.valor - a.valor);
+  const parcelas = ativos.filter((r) => r.pt).map((r) => { const n = parcNum(r, m), falta = +r.pt - n + 1; return { r, n, falta, resto: falta * (+r.valor || 0) }; });
+  const terminando = parcelas.filter((p) => p.falta <= 3).sort((a, b) => a.falta - b.falta);
+  const liberado = sum(terminando.map((p) => p.r));
+  const dividas = parcelas.filter((p) => p.r.cat === 'Dívidas antigas (FIES e CAU)' || p.r.cat === 'Cartões e parcelados' || p.falta > 3).sort((a, b) => a.resto - b.resto);
+  const extra = Math.max(0, livre - guardar);
+  const re = (rx) => sai.filter((x) => rx.test(x.desc));
+  const transp = re(/uber|\b99\b|99pop|taxi/i), assin = re(/netflix|spotify|prime|disney|hbo|\bmax\b|globoplay|youtube|deezer|apple|paramount|crunchyroll/i), taxas = re(/iof|juros|multa|tarifa|encargo|anuidade|mora\b/i);
+  const altas = VARIAVEIS.map((c) => { const atual = sum(sai.filter((x) => x.cat === c)), med = media((x) => x.tipo !== 'entrada' && x.cat === c); return { c, atual, med, d: atual - med }; }).filter((x) => x.med && x.d > Math.max(30, x.med * 0.1)).sort((a, b) => b.d - a.d);
   const hj = hoje(), dt = new Date(hj + 'T12:00:00'), seg = new Date(dt); seg.setDate(dt.getDate() - (dt.getDay() + 6) % 7);
-  const iso = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()), ini = iso(seg), segAnt = new Date(seg); segAnt.setDate(seg.getDate() - 7);
-  const semana = (a, b) => sum(lanc.filter((x) => x.tipo !== 'entrada' && PLANO.variaveis.includes(x.cat) && (x.venc || '') >= a && (x.venc || '') < b));
-  const fimSem = new Date(seg); fimSem.setDate(seg.getDate() + 7);
-  return { cartao, reserva, salCaiu: sal.some((x) => x.pago), feitos: ((plano.feitos || {})[m]) || [],
-    caixinha: sai.filter((x) => /caixinha/i.test(x.desc)), semana: semana(ini, iso(fimSem)), semanaAnt: semana(iso(segAnt), ini), sexta: dt.getDay() === 5,
-    terreno: sai.filter((x) => x.cat === 'Terrenos e IPTU'), dividas: sum(sai.filter((x) => x.cat === 'Dívidas antigas (FIES e CAU)')),
-    varAtual: varM(m), varAnt: varM(addM(m, -1)) };
+  const iso = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()), fimS = new Date(seg); fimS.setDate(seg.getDate() + 7); const segA = new Date(seg); segA.setDate(seg.getDate() - 7);
+  const semana = (a, b) => sum(lanc.filter((x) => x.tipo !== 'entrada' && VARIAVEIS.includes(x.cat) && (x.venc || '') >= a && (x.venc || '') < b));
+  const varM = (mm) => sum(doMes(mm).filter((x) => x.tipo !== 'entrada' && (VARIAVEIS.includes(x.cat) || doCartao(x))));
+  const metaEco = sobra < 0 ? -sobra : arred(varM(m) * 0.1, 10);
+  return { E, S, sobra, cartao, mCart, teto, reserva, guardar, essPend, opcionais, terminando, liberado, dividas, extra, transp, assin, taxas, altas,
+    semana: semana(iso(seg), iso(fimS)), semanaAnt: semana(iso(segA), iso(seg)), sexta: dt.getDay() === 5, varAtual: varM(m), varAnt: varM(addM(m, -1)), metaEco,
+    salCaiu: ent.some((x) => x.cat === 'Salário' && x.pago), feitos: ((plano.feitos || {})[m]) || [] };
+}
+const nomesL = (a, n = 3) => a.slice(0, n).map((x) => x.desc).join(', ') + (a.length > n ? ' e mais ' + (a.length - n) : '');
+function ordemDoMes(A) {
+  return [
+    A.essPend.length ? `Pagar primeiro as essenciais: ${nomesL(A.essPend)} (${brl(sum(A.essPend))})` : 'Contas essenciais do mês já pagas',
+    A.guardar ? `Transferir ${brl(A.guardar)} para a reserva (Caixinha) no mesmo dia do salário` : 'Este mês não sobra para guardar: segure os gastos variáveis até fechar no azul',
+    `Cartões: teto de ${brl(A.teto)} no mês todo, bloqueando novas compras em 80% (${brl(A.teto * 0.8)})`,
+    A.opcionais.length ? `Pausar ou reduzir ${A.opcionais[0].desc} (${brl(A.opcionais[0].valor)}) até formar um mês de reserva` : 'Revisar gastos opcionais que se repetem e cortar o que não usa',
+    A.terminando.length ? `Quando ${A.terminando[0].r.desc} terminar (falta${A.terminando[0].falta > 1 ? 'm ' + A.terminando[0].falta + ' parcelas' : ' 1 parcela'}), mandar os ${brl(A.terminando[0].r.valor)} para a reserva ou para quitar dívida` : (A.dividas.length && A.extra ? `Usar ${brl(arred(A.extra, 10))} que sobram para antecipar ${A.dividas[0].r.desc}` : 'Registrar tudo o que gastar para a análise ficar certinha')
+  ];
 }
 function planoHtml(m) {
-  const s = sinais(m), n = s.feitos.filter(Boolean).length, tot = PLANO.ordem.length, tudo = n === tot, atual = m === hoje().slice(0, 7);
-  const destaque = atual && s.salCaiu && !tudo;
-  const meta = s.reserva >= PLANO.reserva1 ? PLANO.reserva2 : PLANO.reserva1, pr = Math.min(1, s.reserva / meta);
-  return `<div class="card plano${destaque ? ' alerta' : ''}"><div class="head"><h2>🗓️ Ordem no dia do pagamento</h2><b>${n}/${tot}</b></div>
-    ${destaque ? `<div class="rec warn"><b>💸</b><span>${cfg.tom === 'direto' ? 'O salário entrou. Siga a ordem abaixo.' : 'O salário caiu! Antes de qualquer comprinha, segue a ordem aqui, combinado?'}</span></div>` : tudo ? `<div class="rec ok"><b>✅</b><span>${cfg.tom === 'direto' ? 'Ordem do dia do pagamento cumprida.' : 'Ordem do dia do pagamento cumprida. Disciplina de quem vai longe!'}</span></div>` : ''}
-    <div class="ck">${PLANO.ordem.map((t, i) => `<label class="${s.feitos[i] ? 'feito' : ''}"><input type="checkbox" data-act="plano-ck" data-k="${i}" ${s.feitos[i] ? 'checked' : ''} ${canWrite ? '' : 'disabled'}><span><b>${i + 1}</b> ${esc(t)}</span></label>`).join('')}</div>
-    <div class="etapas"><h3>🎯 Meta em duas etapas</h3>
-      <div class="kv"><span>${s.reserva >= PLANO.reserva1 ? 'Etapa 1 cumprida! Agora rumo a ' + brl(PLANO.reserva2) : 'Agora: guardar ' + brl(PLANO.reserva1) + '/mês'}</span><b>${Math.round(pr * 100)}%</b><small>${brl(s.reserva)} guardados em ${nomeM(m)} (categoria Reserva e investimentos) · depois: ${brl(PLANO.reserva2)}/mês</small><i style="width:${(pr * 100).toFixed(1)}%;background:var(--${pr >= 1 ? 'ok' : 'warn'})"></i></div></div></div>`;
+  const A = analise(m), it = ordemDoMes(A), atual = m === hoje().slice(0, 7), destaque = atual && A.salCaiu;
+  const aberto = st.dobra.plano ?? false;
+  if (!aberto) return `<button class="card dobra plano" data-act="dobra" data-k="plano"><span>💡 Sugestão para o dia do pagamento</span><b>ver ›</b></button>`;
+  return `<div class="card plano"><button class="head dobra-t" data-act="dobra" data-k="plano"><h2>💡 Sugestão para o dia do pagamento</h2><b>˅</b></button>
+    <p class="sub" style="margin:0">Só uma sugestão, montada com os seus números de ${nomeM(m)}${destaque ? ' (o salário já caiu)' : ''}. Muda sozinha quando você lança ou paga algo.</p>
+    <ol class="sug">${it.map((t) => `<li>${esc(t)}</li>`).join('')}</ol>
+</div>`;
 }
 function estrategiaHtml(m) {
-  const s = sinais(m), p = s.cartao / PLANO.teto, kc = p > 1.00001 ? 'bad' : p >= PLANO.alerta ? 'warn' : 'ok';
-  const ico = (k) => k === 'ok' ? '✅' : k === 'bad' ? '🚨' : k === 'warn' ? '⚠️' : '💡';
-  const terCartao = s.terreno.some((x) => /cart/i.test(x.forma || ''));
-  const eco = s.varAnt - s.varAtual, ke = !s.varAnt ? 'n' : eco >= PLANO.economia ? 'ok' : eco > 0 ? 'warn' : 'bad';
-  const kw = s.semanaAnt && s.semana > s.semanaAnt ? 'warn' : 'ok';
-  const it = [
-    ['1. Teto para cartão', kc, `${brl(s.cartao)} de ${brl(PLANO.teto)} no Santander (${Math.round(p * 100)}%)${kc === 'bad' ? ' · passou ' + brl(s.cartao - PLANO.teto) + '. Cartão bloqueado!' : kc === 'warn' ? ' · chegou em 80%: bloqueie novas compras' : ' · sobram ' + brl(PLANO.teto - s.cartao)}`, p],
-    ['2. Revisar terreno e tributos', terCartao ? 'warn' : 'n', terCartao ? 'Tem terreno ou IPTU no cartão: tire daí e pague pela reserva separada' : `IPTU e parcelas do terreno numa reserva mensal, fora do cartão · ${brl(sum(s.terreno))} em ${nomeM(m)}`],
-    ['3. Negociar dívidas', 'n', `Prioridade: Santander, FIES e CAU. Toda economia vai para a dívida com maior juros · FIES e CAU em ${nomeM(m)}: ${brl(s.dividas)}`],
-    ['4. Meta semanal variável', s.sexta ? 'warn' : kw, `Mercado, cabelo, pets e compras nesta semana: ${brl(s.semana)}${s.semanaAnt ? ' (semana passada: ' + brl(s.semanaAnt) + ')' : ''}${s.sexta ? ' · hoje é sexta: dia de comparar!' : ' · compare toda sexta-feira'}`],
-    ['5. Poupança automática', s.caixinha.length ? 'ok' : 'warn', s.caixinha.length ? `Caixinha Nubank: ${brl(sum(s.caixinha))} transferidos em ${nomeM(m)}` : `Transferir ${brl(PLANO.caixinha)} para a Caixinha Nubank no dia do salário, não como sobra · ainda não vi a transferência em ${nomeM(m)}`],
-    ['6. Meta inicial', ke, s.varAnt ? (eco > 0 ? `Economizou ${brl(eco)} em cartão e variáveis comparado a ${nomeM(addM(m, -1))} (meta ${brl(PLANO.economia)})` : `Cartão e variáveis ${brl(-eco)} acima de ${nomeM(addM(m, -1))}. Meta: economizar ${brl(PLANO.economia)} por mês`) : `Economizar ${brl(PLANO.economia)} por mês, começando por cartão e gastos variáveis`]
-  ];
-  return `<div class="card estrategia"><div><h2>💡 Estratégia de economia</h2><p class="sub">Sinais do seu plano, calculados com os lançamentos de ${nomeM(m)}</p></div>
-    ${it.map(([t, k, d, pp]) => `<div class="kv sinal ${k}"><span>${ico(k)} ${esc(t)}</span><b></b><small>${esc(d)}</small>${pp != null ? `<i style="width:${Math.min(100, pp * 100).toFixed(1)}%;background:var(--${k})"></i>` : ''}</div>`).join('')}</div>`;
+  const A = analise(m), ico = { ok: '✅', bad: '🚨', warn: '⚠️', n: '💡' }, it = [], pc = A.cartao / A.teto;
+  const kc = pc > 1.00001 ? 'bad' : pc >= 0.8 ? 'warn' : 'ok';
+  it.push(['Teto dos cartões', kc, `${brl(A.cartao)} de ${brl(A.teto)} (${Math.round(pc * 100)}%)${(cfg.plano || {}).teto ? ' · teto definido nas Configurações' : A.mCart && A.mCart * 0.9 < 900 ? ' · teto calculado como 90% da sua média de ' + brl(A.mCart) : ' · teto do seu plano (dá para mudar nas Configurações)'}${kc === 'bad' ? ' · passou ' + brl(A.cartao - A.teto) + ': cartão de castigo' : kc === 'warn' ? ' · chegou em 80%: bloqueie novas compras' : ' · sobram ' + brl(A.teto - A.cartao)}`, pc]);
+  it.push(['Saldo do mês', A.sobra < 0 ? 'bad' : A.sobra < A.E * 0.05 ? 'warn' : 'ok', A.sobra < 0 ? `Faltam ${brl(-A.sobra)}: corte esse valor dos variáveis antes de qualquer gasto novo` : `Sobram ${brl(A.sobra)}${A.guardar ? ' · guarde ' + brl(A.guardar) + ' logo que o salário cair' : ''}`]);
+  if (A.dividas.length) { const d = A.dividas[0]; it.push(['Quitar dívidas (bola de neve)', 'n', `Comece pela menor: ${d.r.desc}, faltam ${d.falta} parcela${d.falta > 1 ? 's' : ''} (${brl(d.resto)})${A.extra >= 50 ? '. Antecipe ' + brl(arred(Math.min(A.extra, d.resto), 10)) + ' com o que sobra' : ''}${A.dividas.length > 1 ? ' · depois: ' + A.dividas.slice(1, 3).map((x) => x.r.desc).join(', ') : ''}`]); }
+  if (A.terminando.length) it.push(['Parcelas acabando', 'ok', A.terminando.map((p) => `${p.r.desc} (falta${p.falta > 1 ? 'm ' + p.falta : ' 1'})`).join(', ') + ` · libera ${brl(A.liberado)}/mês: mande direto para reserva ou dívida`]);
+  if (A.altas.length) { const a = A.altas[0]; it.push(['Gasto que subiu', 'warn', `${a.c}: ${brl(a.atual)} contra média de ${brl(a.med)} (+${brl(a.d)}). Voltar à média já economiza esse valor`]); }
+  if (A.transp.length >= 4) it.push(['Vazamento: transporte por app', 'warn', `${A.transp.length} corridas somando ${brl(sum(A.transp))} em ${nomeM(m)}. Cortar metade economiza cerca de ${brl(sum(A.transp) / 2)}`]);
+  if (A.assin.length) it.push(['Assinaturas', 'n', `${nomesL(A.assin)} = ${brl(sum(A.assin))}/mês. Vale manter todas?`]);
+  if (A.taxas.length) it.push(['Juros, IOF e tarifas', 'bad', `${brl(sum(A.taxas))} pagos só de taxa em ${nomeM(m)} (${nomesL(A.taxas, 2)}). Evite usar o limite da conta`]);
+  if (A.opcionais.length) it.push(['Opcionais que se repetem', 'n', `${A.opcionais.slice(0, 3).map((r) => r.desc + ' ' + brl(r.valor)).join(', ')}. Pausar o maior até a reserva somar um mês de contas`]);
+  it.push(['Meta semanal variável', A.sexta || (A.semanaAnt && A.semana > A.semanaAnt) ? 'warn' : 'ok', `Mercado, cuidados e compras nesta semana: ${brl(A.semana)}${A.semanaAnt ? ' (semana passada: ' + brl(A.semanaAnt) + ')' : ''}${A.sexta ? ' · hoje é sexta: dia de comparar!' : ''}`]);
+  const eco = A.varAnt - A.varAtual;
+  it.push(['Meta de economia', !A.varAnt ? 'n' : eco >= A.metaEco ? 'ok' : eco > 0 ? 'warn' : 'bad', A.varAnt ? (eco > 0 ? `Economizou ${brl(eco)} em cartões e variáveis contra ${nomeM(addM(m, -1))} (meta ${brl(A.metaEco)})` : `Cartões e variáveis ${brl(-eco)} acima de ${nomeM(addM(m, -1))}. Meta: cortar ${brl(A.metaEco)}`) : `Meta: cortar ${brl(A.metaEco)} em cartões e variáveis`]);
+  const nb = it.filter((x) => x[1] === 'bad').length, nw = it.filter((x) => x[1] === 'warn').length, aberto = st.dobra.estrat ?? true;
+  const res = (nb ? '🚨 ' + nb + ' ' : '') + (nw ? '⚠️ ' + nw + ' ' : '') + '💡 ' + it.length;
+  if (!aberto) return `<button class="card dobra" data-act="dobra" data-k="estrat"><span>💡 Estratégia de economia</span><b>${res} ›</b></button>`;
+  return `<div class="card estrategia"><button class="head dobra-t" data-act="dobra" data-k="estrat"><h2>💡 Estratégia de economia</h2><b>${res} ˅</b></button><p class="sub" style="margin:0">Análise automática de todos os seus lançamentos: refeita sempre que algo muda</p>
+    ${it.map(([t, k, d, pp], i) => `<div class="kv sinal ${k}"><span>${ico[k]} ${i + 1}. ${esc(t)}</span><b></b><small>${esc(d)}</small>${pp != null ? `<i style="width:${Math.min(100, pp * 100).toFixed(1)}%;background:var(--${k})"></i>` : ''}</div>`).join('')}</div>`;
 }
 async function marcarPlano(i, on) {
   const m = st.mes, f = { ...(plano.feitos || {}) }, a = [...(f[m] || [])]; a[i] = on; f[m] = a;
   try { await db.doc('config/plano').set({ ...plano, feitos: f }); plano = { ...plano, feitos: f };
-    if (a.filter(Boolean).length === PLANO.ordem.length) toast(cfg.tom === 'direto' ? 'Ordem do dia do pagamento concluída.' : '🏆 Ordem completa! Seu eu do futuro mandou um beijo.');
+    if (a.filter(Boolean).length === 5) toast(cfg.tom === 'direto' ? 'Ordem do dia do pagamento concluída.' : '🏆 Ordem completa! Seu eu do futuro mandou um beijo.');
     render(); } catch (e) { toast('⚠️ Não consegui salvar agora.'); }
 }
 function gastoCat(m) { const g = new Map(); for (const x of doMes(m)) if (x.tipo !== 'entrada') g.set(x.cat || 'Outros', (g.get(x.cat || 'Outros') || 0) + (+x.valor||0)); return g; }
@@ -333,11 +419,11 @@ function recados(m) {
   const passou = lim.filter((x) => x[2] > x[1] + 0.005), perto = lim.filter((x) => x[2] >= x[1] * 0.8 && x[2] <= x[1] + 0.005);
   if (passou.length) { const [c, t, v] = passou[0]; out.push(R('bad','🧨', c + ' estourou o limite em ' + brl(v - t) + '. Esse orçamento pediu socorro!' + (passou.length > 1 ? ' E não está sozinha: mais ' + (passou.length - 1) + ' categoria' + (passou.length > 2 ? 's' : '') + ' passou.' : ''), c + ' passou do limite em ' + brl(v - t) + (passou.length > 1 ? ' (mais ' + (passou.length - 1) + ' categoria' + (passou.length > 2 ? 's' : '') + ' acima do limite)' : '') + '.')); }
   else if (perto.length) { const [c, t, v] = perto[0]; out.push(R('warn','🫣', c + ' já usou ' + Math.round(v / t * 100) + '% do limite. Pé no freio, faltam só ' + brl(t - v) + '.', c + ' já usou ' + Math.round(v / t * 100) + '% do limite. Restam ' + brl(t - v) + '.')); }
-  const tc = sum(sai.filter(doSantander));
-  if (tc > PLANO.teto + 0.005) out.push(R('bad','💳','O Santander passou o teto de ' + brl(PLANO.teto) + ' em ' + brl(tc - PLANO.teto) + '. Cartão de castigo até o mês que vem!','Cartão Santander passou o teto de ' + brl(PLANO.teto) + ' em ' + brl(tc - PLANO.teto) + '.'));
-  else if (tc >= PLANO.teto * PLANO.alerta) out.push(R('warn','💳','O Santander já bateu ' + Math.round(tc / PLANO.teto * 100) + '% do teto de ' + brl(PLANO.teto) + '. Hora de bloquear novas compras!','Cartão Santander em ' + Math.round(tc / PLANO.teto * 100) + '% do teto. Bloqueie novas compras.'));
+  const tA = analise(m), tc = tA.cartao, tt = tA.teto;
+  if (tc > tt + 0.005) out.push(R('bad','💳','Os cartões passaram o teto de ' + brl(tt) + ' em ' + brl(tc - tt) + '. Cartão de castigo até o mês que vem!','Cartões passaram o teto de ' + brl(tt) + ' em ' + brl(tc - tt) + '.'));
+  else if (tc >= tt * 0.8) out.push(R('warn','💳','Os cartões já bateram ' + Math.round(tc / tt * 100) + '% do teto de ' + brl(tt) + '. Hora de bloquear novas compras!','Cartões em ' + Math.round(tc / tt * 100) + '% do teto. Bloqueie novas compras.'));
   const falta = ent.filter((x) => !x.pago);
-  if (falta.length && pend.length && m === hoje().slice(0,7)) out.push(R('warn','✋','Segura a carteira! Ainda não caiu ' + brl(sum(falta)) + ' (' + nomes(falta) + '). Nada de gastar por conta.','Ainda não entrou ' + brl(sum(falta)) + ' (' + nomes(falta) + ').'));
+  if (falta.length && pend.length && m === hoje().slice(0,7)) out.push(R('warn','✋','Segura a carteira! Ainda não caiu ' + brl(sum(falta)) + ' da renda do mês. Nada de gastar por conta.','Ainda não entrou ' + brl(sum(falta)) + ' da renda do mês.'));
   const ant = sum(doMes(addM(m, -1)).filter((x) => x.tipo !== 'entrada')), d = tS - ant;
   if (ant && tS && d < -0.5) out.push(R('ok','📉','Você está gastando ' + brl(-d) + ' a menos que em ' + nomeM(addM(m, -1)) + '. Economia detectada, pode comemorar (de graça).','Gastos ' + brl(-d) + ' menores que em ' + nomeM(addM(m, -1)) + '.'));
   else if (ant && d > 0.5) out.push(R('warn','📈','As contas subiram ' + brl(d) + ' em relação a ' + nomeM(addM(m, -1)) + '. Quem convidou esses gastos?','Gastos ' + brl(d) + ' maiores que em ' + nomeM(addM(m, -1)) + '.'));
@@ -361,8 +447,10 @@ function telaConfig() {
   <div class="card"><div><h2>Jeito dos recados</h2><p class="sub">Os avisos que aparecem no início e em despesas</p></div>
     <div class="seg" role="group" aria-label="Jeito dos recados">${[['engracado','Engraçado 😜','Com piada e puxão de orelha'],['direto','Direto 🎯','Só os números, sem graça']].map(([k, l, d]) => `<button type="button" data-act="cfg-tom" data-k="${k}" aria-pressed="${k === tom}"><b>${l}</b><small>${d}</small></button>`).join('')}</div></div>
   ${avisosHtml()}
-  ${atualizaHtml()}
+  ${updCard()}${atualizaHtml()}
   ${aparenciaHtml()}
+  <div class="card"><div><h2>💳 Teto dos cartões</h2><p class="sub">Total que você aceita gastar por mês somando todos os cartões. Vazio = o app calcula sozinho (R$ 900 do plano, ou menos se sua média já for menor).</p></div>
+    <label class="f">Teto mensal<input id="c-teto" inputmode="decimal" value="${(cfg.plano || {}).teto ? String(cfg.plano.teto).replace('.', ',') : ''}" placeholder="automático"></label></div>
   <div class="card"><div><h2>Limite por categoria</h2><p class="sub">Quanto você aceita gastar por mês em cada uma. Deixe vazio para não acompanhar. O app avisa quando passar de 80% e quando estourar.</p></div>
     <div class="cfgs">${CATS.map((c, i) => `<label class="f">${EMO[c] || ''} ${esc(c)}<input id="c-t-${i}" inputmode="decimal" value="${t[c] != null && t[c] !== '' ? String(t[c]).replace('.', ',') : ''}" placeholder="sem limite"></label>`).join('')}</div>
     <p class="muted" style="margin:0">Soma dos limites salvos: <b>${brl(soma)}</b> · entradas previstas em ${nomeM(st.mes)}: <b>${brl(ent)}</b>${soma > ent && ent ? ' · os limites passam das entradas' : ''}</p></div>
@@ -374,7 +462,8 @@ function telaConfig() {
 async function salvarCfg() {
   const tetos = {};
   for (let i = 0; i < CATS.length; i++) { const v = parseV(val('c-t-' + i)); if (Number.isNaN(v) || (v != null && v < 0)) { toast('⚠️ O limite de ' + CATS[i] + ' não é um número.'); document.getElementById('c-t-' + i).focus(); return; } if (v) tetos[CATS[i]] = v; }
-  const novo = { nome: val('c-nome').trim() || 'Gessyca', tom: st.tom || cfg.tom || 'engracado', tetos, avisos: lerAvisos(), naoDup: cfg.naoDup || [] };
+  const tetoC = parseV(val('c-teto')); if (Number.isNaN(tetoC) || (tetoC != null && tetoC < 0)) { toast('⚠️ O teto dos cartões não é um número.'); return; }
+  const novo = { plano: tetoC ? { teto: tetoC } : {}, nome: val('c-nome').trim() || 'Gessyca', tom: st.tom || cfg.tom || 'engracado', tetos, avisos: lerAvisos(), naoDup: cfg.naoDup || [] };
   try { await db.doc('config/ajustes').set(novo); cfg = novo; st.tom = null; toast(novo.tom === 'direto' ? 'Configurações salvas.' : '⚙️ Prontinho, configurações salvas!'); ir('inicio'); }
   catch (e) { toast('Não foi possível salvar agora. Tente de novo em instantes.'); }
 }
@@ -399,24 +488,115 @@ function telaInicio() {
   const rcb = sum(ent.filter((x) => x.pago)), prevE = sum(ent), tSai = sum(sai), pago = sum(sai.filter((x) => x.pago));
   const p = tSai ? pago / tSai : 0, c = 2 * Math.PI * 38;
   const prox = sai.filter((x) => !x.pago).sort(ordem).slice(0, 5);
-  return (vazio() ? `<div class="card"><h2>👋 Bem-vinda!</h2><p class="muted" style="margin:0">Para trazer suas contas, toque em Restaurar backup e escolha o arquivo de backup (.json). Ou comece do zero com o botão +.</p><button class="btn" data-act="bk-imp">⬆️ Restaurar backup</button><input id="bk-file" type="file" accept=".json,application/json,application/octet-stream,text/plain" hidden></div>` : '') + `<div class="head">${titulo('Oi, ' + esc(cfg.nome || 'Gessyca') + ' 👋', 'Bora ver como anda o dinheiro?')}<button class="gear" data-act="tab" data-k="config" aria-label="Configurações">⚙️</button></div>` + stepHtml() + recHtml(st.mes) +
-    `<div class="hero"><div><h2>Resumo do mês</h2><dl><dt>Entradas previstas</dt><dd>${brl(prevE)}</dd><dt>Já recebido</dt><dd>${brl(rcb)}</dd><dt>Contas do mês</dt><dd>${brl(tSai)}</dd><dt>Já pago</dt><dd>${brl(pago)}</dd><dt>Falta pagar</dt><dd>${brl(tSai - pago)}</dd><dt>${prevE - tSai < 0 ? 'Falta no mês' : 'Sobra no mês'}</dt><dd>${brl(prevE - tSai)}</dd></dl></div>
-      <svg class="donut" viewBox="0 0 96 96" role="img" aria-label="${Math.round(p*100)}% das contas pagas"><circle cx="48" cy="48" r="38" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="12"/><circle cx="48" cy="48" r="38" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-dasharray="${(c*p).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 48 48)"/><text x="48" y="53" text-anchor="middle" font-size="16" font-weight="700" fill="currentColor">${Math.round(p*100)}%</text></svg></div>
-    ${planoHtml(st.mes)}
+  return (vazio() ? `<div class="card"><h2>👋 Bem-vinda!</h2><p class="muted" style="margin:0">Para trazer suas contas, toque em Restaurar backup e escolha o arquivo de backup (.json). Ou comece do zero com o botão +.</p><button class="btn" data-act="bk-imp">⬆️ Restaurar backup</button><input id="bk-file" type="file" accept=".json,application/json,application/octet-stream,text/plain" hidden></div>` : '') + `<div class="head">${titulo('Oi, ' + esc(cfg.nome || 'Gessyca') + ' 👋', 'Bora ver como anda o dinheiro?')}<button class="gear" data-act="tab" data-k="config" aria-label="Configurações">⚙️</button></div>` + stepHtml() + painelHtml(st.mes) + `<div class="card"><div class="head"><h2>🏁 Objetivos</h2><button class="link" data-act="tab" data-k="objetivos">Ver todos</button></div>${obj.length ? obj.slice(0, 2).map(goalHtml).join('') : '<div class="empty">Crie seu primeiro objetivo e acompanhe quanto já guardou.<br><button class="link" data-act="tab" data-k="objetivos">Criar objetivo</button></div>'}</div>` + updCard() + recHtml(st.mes) +
+    `${planoHtml(st.mes)}
     ${estrategiaHtml(st.mes)}
-    <div class="card"><div class="head"><h2>Orçamento do mês</h2><button class="link" data-act="tab" data-k="estatisticas">Ver todos</button></div>${orcHtml(st.mes, 3)}</div>
-    <div class="short">${TABS.slice(1).map(([k,l]) => `<button data-act="tab" data-k="${k}"><svg viewBox="0 0 24 24">${ICON[k]}</svg>${k === 'recebimentos' ? 'Recebimentos' : k === 'estatisticas' ? 'Estatísticas' : k === 'calendario' ? 'Calendário' : l}</button>`).join('')}</div>
-    <div class="card"><div class="head"><h2>Próximos pagamentos</h2><button class="link" data-act="tab" data-k="despesas">Ver todos</button></div><div class="rows">${prox.length ? prox.map(rowHtml).join('') : '<div class="empty">Nenhum pagamento pendente neste mês.</div>'}</div></div>
-    <div class="card"><div class="head"><h2>Recebimentos do mês</h2><button class="link" data-act="tab" data-k="recebimentos">Ver todos</button></div><div class="rows">${ent.length ? ent.sort(ordem).slice(0, 4).map(rowHtml).join('') : '<div class="empty">Nenhum recebimento registrado.</div>'}</div></div>
-    <div class="card"><div class="head"><h2>Objetivos</h2><button class="link" data-act="tab" data-k="objetivos">Ver todos</button></div>${obj.length ? obj.slice(0, 2).map(goalHtml).join('') : '<div class="empty">Crie seu primeiro objetivo e acompanhe quanto já guardou.</div>'}</div>`;
+    <div class="card"><div class="head"><h2>⏰ Próximos pagamentos</h2><button class="link" data-act="tab" data-k="despesas">Ver todos</button></div><div class="rows">${prox.length ? prox.map(rowHtml).join('') : '<div class="empty">Nenhum pagamento pendente neste mês. 🎉</div>'}</div></div>
+    <div class="card"><div class="head"><h2>${Object.values(cfg.tetos || {}).some((t) => +t > 0) ? '🎯 Orçamento do mês' : '🧭 Para onde vai o dinheiro'}</h2><button class="link" data-act="tab" data-k="estatisticas">Ver tudo</button></div>${Object.values(cfg.tetos || {}).some((t) => +t > 0) ? orcHtml(st.mes, 4) : ondeVai(sai, prevE)}</div>`;
+}
+function ondeVai(sai, renda) {
+  const g = new Map(); for (const x of sai) g.set(x.cat || 'Outros', (g.get(x.cat || 'Outros') || 0) + (+x.valor || 0));
+  const it = [...g].sort((a, b) => b[1] - a[1]).slice(0, 5), mx = Math.max(1, ...it.map((x) => x[1]));
+  return it.length ? it.map(([c, v]) => `<div class="kv"><span>${EMO[c] || ''} ${esc(c)}</span><b>${brl(v)}</b><small>${renda ? Math.round(v / renda * 100) + '% da renda' : ''}</small><i style="width:${(v / mx * 100).toFixed(1)}%"></i></div>`).join('') : '<div class="empty">Ainda não há despesas neste mês.</div>';
+}
+function painelHtml(m) {
+  const all = doMes(m), ent = all.filter((x) => x.tipo === 'entrada').sort(ordem), sai = all.filter((x) => x.tipo !== 'entrada');
+  const E = sum(ent), R = sum(ent.filter((x) => x.pago)), S = sum(sai), P = sum(sai.filter((x) => x.pago));
+  const prev = E - S, real = R - P, pc = E ? Math.min(100, S / E * 100) : 0, pp = S ? P / S * 100 : 0;
+  const cor = (v) => v < -0.005 ? 'neg' : 'pos';
+  return `<section class="painel" aria-label="Painel do mês">
+    <h2 class="p-h">📊 Resumo do mês</h2>
+    <div class="p-renda"><div class="p-tit"><span>💰 Renda total</span><b>${brl(E)}</b></div>
+      <div class="p-sub">Já caiu ${brl(R)}${E - R > 0.005 ? ' · falta receber ' + brl(E - R) : ''} · ${ent.length} ${ent.length === 1 ? 'entrada' : 'entradas'}</div>
+      <button class="p-ver" data-act="tab" data-k="recebimentos">${ent.length ? 'Ver entradas ›' : 'Lançar entradas ›'}</button></div>
+    <div class="p-saldos">
+      <div class="p-box ${prev < 0 ? 'mau' : 'bom'}"><small>📅 Saldo previsto do mês</small><b>${brl(prev)}</b>
+        <span class="conta"><span>Renda total do mês</span><span>${brl(E)}</span><span>− Despesas do mês</span><span>${brl(S)}</span><span>= ${prev < 0 ? 'Falta' : 'Sobra'}</span><span>${brl(prev)}</span></span>
+        <em>Quanto sobra no fim do mês se tudo o que está lançado entrar e for pago.</em></div>
+      <div class="p-box real"><small>💵 Saldo até agora</small><b class="${cor(real)}">${brl(real)}</b>
+        <span class="conta"><span>Já recebido</span><span>${brl(R)}</span><span>− Já pago</span><span>${brl(P)}</span><span>= Na mão</span><span>${brl(real)}</span></span>
+        <em>Só conta o que você já marcou como recebido ✅ e pago ✅. Muda quando você marca.</em></div>
+    </div>
+    <div class="p-bar"><div class="head"><span>Despesas usam <b>${Math.round(pc)}%</b> da renda</span><span>${Math.round(pp)}% pago</span></div>
+      <div class="bar2"><i style="width:${pc.toFixed(1)}%;background:${pc >= 100 ? 'var(--bad)' : pc >= 90 ? 'var(--warn)' : 'var(--ok)'}"></i></div>
+      <div class="head muted"><span>Falta pagar ${brl(S - P)}</span><span>${prev >= 0 ? 'Livre para guardar ' + brl(prev) : 'Faltam ' + brl(-prev)}</span></div></div>
+  </section>`;
+}
+function metaEtapas(o) {
+  const A = analise(st.mes), e1 = A.guardar || 100, e2 = e1 + (A.liberado || arred(e1 * 0.6, 50)), falta = Math.max(0, (+o.meta || 0) - (+o.guardado || 0));
+  if (!falta) return '<div class="etapa ok">🎉 Objetivo alcançado!</div>';
+  const n = o.prazo ? Math.max(1, diffM(st.mes, o.prazo) + 1) : 0, porMes = n ? falta / n : 0, ritmo = Math.ceil(falta / e1);
+  return `<div class="etapa"><b>🎯 Meta em duas etapas</b><span>Agora: guardar ${brl(e1)}/mês · depois: ${brl(e2)}/mês${A.liberado ? ' (somando ' + brl(A.liberado) + ' de parcelas que acabam)' : ''}</span>
+    <small>${n ? 'Para chegar no prazo: ' + brl(porMes) + '/mês por ' + n + (n === 1 ? ' mês' : ' meses') + (porMes > e1 + 0.5 ? ' (acima do sugerido: reveja o prazo ou corte gastos)' : ' ✅ cabe no sugerido') : 'No ritmo sugerido, fica pronto em ' + ritmo + (ritmo === 1 ? ' mês' : ' meses')} · guardado em ${nomeM(st.mes)}: ${brl(A.reserva)}</small></div>`;
 }
 function goalHtml(o) {
   const p = o.meta ? Math.min(1, (+o.guardado||0) / o.meta) : 0;
   return `<div class="goal"><div class="head"><button class="what" data-act="obj" data-k="${esc(o.id)}"><strong>${esc(o.nome)}</strong><span>${o.prazo ? 'até ' + MESES[+o.prazo.slice(5)-1] + ' de ' + o.prazo.slice(0,4) : 'sem prazo'}</span></button><div class="val"><span>${brl(o.guardado)}</span><span class="muted">de ${brl(o.meta)}</span></div></div>
-    <div class="bar"><i style="width:${(p*100).toFixed(1)}%"></i></div><div class="head"><span class="muted">${Math.round(p*100)}% · faltam ${brl(Math.max(0, o.meta - (+o.guardado||0)))}</span>${canWrite ? `<button class="btn ghost" data-act="guardar" data-k="${esc(o.id)}">Guardar valor</button>` : ''}</div></div>`;
+    <div class="bar"><i style="width:${(p*100).toFixed(1)}%"></i></div>${metaEtapas(o)}<div class="head"><span class="muted">${Math.round(p*100)}% · faltam ${brl(Math.max(0, o.meta - (+o.guardado||0)))}</span>${canWrite ? `<button class="btn ghost" data-act="guardar" data-k="${esc(o.id)}">Guardar valor</button>` : ''}</div></div>`;
 }
 function telaObjetivos() {
   return titulo('Objetivos', 'Planeje o que você quer conquistar') + `<div class="card">${obj.length ? obj.map(goalHtml).join('') : '<div class="empty">Nenhum objetivo ainda.<br>Use o botão + para criar o primeiro, por exemplo a reserva de emergência.</div>'}</div>`;
+}
+/* ---------- análise do mês nos gráficos: diagnóstico, onde atacar e distribuição ideal da renda ---------- */
+const BALDES = [
+  { k: 'ess', nome: 'Essenciais', ico: '🏠', alvo: 0.55, cats: ['Casa, estudo e transporte', 'Alimentação e mercado', 'Terrenos e IPTU', 'Dívidas antigas (FIES e CAU)'], dica: 'contas da casa, estudo, mercado, terrenos e parcelas das dívidas' },
+  { k: 'est', nome: 'Estilo de vida', ico: '🛍️', alvo: 0.25, cats: ['Lazer e compras', 'Pets e cuidados pessoais', 'Cartões e parcelados', 'Outros'], dica: 'lazer, compras, cuidados, cartões e o resto' },
+  { k: 'fut', nome: 'Futuro', ico: '🐷', alvo: 0.20, cats: ['Reserva e investimentos'], dica: 'reserva, investimento e dinheiro extra para quitar dívidas' }
+];
+const FIXAS_CONTRATO = ['Dívidas antigas (FIES e CAU)', 'Terrenos e IPTU'];
+function contasHtml(lista, E, n = 3) {
+  return `<ul class="ofs">${lista.slice(0, n).map((x) => `<li><button data-act="edit" data-k="${esc(key(x))}"><span><b>${esc(x.desc)}</b><small>${esc(x.cat || 'Outros')}${x.forma ? ' · ' + esc(x.forma) : ''}${x.rid ? ' · todo mês' : ''}</small></span><em>${brl(x.valor)}${E ? '<small>' + (x.valor / E * 100).toFixed(1).replace('.', ',') + '% da renda</small>' : ''}</em></button></li>`).join('')}</ul>`;
+}
+function analiseMesHtml(m) {
+  const A = analise(m), all = doMes(m), sai = all.filter((x) => x.tipo !== 'entrada'), E = A.E;
+  if (!E && !sai.length) return `<div class="card"><h2>🔎 Análise do mês</h2><div class="empty">Lance entradas e despesas de ${nomeM(m)} para eu analisar.</div></div>`;
+  const porCat = new Map(); for (const x of sai) porCat.set(x.cat || 'Outros', (porCat.get(x.cat || 'Outros') || 0) + (+x.valor || 0));
+  const balde = (b) => b.cats.reduce((s, c) => s + (porCat.get(c) || 0), 0) + (b.k === 'fut' ? Math.max(0, A.sobra) : 0);
+  const linhas = BALDES.map((b) => { const v = balde(b), pct = E ? v / E : 0, ideal = E * b.alvo; return { ...b, v, pct, ideal, dif: b.k === 'fut' ? ideal - v : v - ideal }; });
+  // nota do mês (0 a 10)
+  let nota = 10; const ess = linhas[0], est = linhas[1], fut = linhas[2];
+  if (A.sobra < 0) nota -= 4; if (ess.pct > 0.65) nota -= 2; else if (ess.pct > 0.55) nota -= 1;
+  if (est.pct > 0.35) nota -= 2; else if (est.pct > 0.25) nota -= 1; if (fut.pct < 0.05) nota -= 2; else if (fut.pct < 0.15) nota -= 1;
+  if (A.cartao > A.teto) nota -= 1; if (A.taxas.length) nota -= 1; nota = Math.max(0, Math.min(10, nota));
+  const corN = nota >= 8 ? 'ok' : nota >= 5 ? 'warn' : 'bad';
+  const diag = A.sobra < 0 ? `As despesas passam a renda em ${brl(-A.sobra)}. Prioridade é fechar no azul antes de qualquer outra meta.`
+    : fut.pct < 0.1 ? `As contas cabem na renda, mas sobra pouco para o futuro: só ${Math.round(fut.pct * 100)}% (o ideal é ${Math.round(fut.alvo * 100)}%).`
+    : ess.pct > 0.65 ? `As contas fecham, mas os essenciais comem ${Math.round(ess.pct * 100)}% da renda (ideal até 55%). O caminho é renegociar dívidas e reduzir contas fixas.`
+    : est.pct > 0.3 ? `As contas fecham, mas o estilo de vida está em ${Math.round(est.pct * 100)}% da renda (ideal até 25%). Dá para guardar mais cortando aí.`
+    : `Mês equilibrado: ${Math.round(fut.pct * 100)}% da renda livre para guardar ou quitar dívidas.`;
+  // onde atacar: categorias acima da média e o balde que mais passou do ideal
+  const ataque = [];
+  const pior = [ess, est].filter((l) => l.dif > 1).sort((a, b) => b.dif - a.dif)[0];
+  const porValor = (l) => [...l].sort((a, b) => b.valor - a.valor);
+  if (pior) { const itens = porValor(sai.filter((x) => pior.cats.includes(x.cat || 'Outros') && !FIXAS_CONTRATO.includes(x.cat)));
+    ataque.push({ t: `${pior.ico} ${pior.nome} passou ${brl(pior.dif)} do ideal`, d: `Ideal: até ${brl(pior.ideal)} (${Math.round(pior.alvo * 100)}% da renda). As contas que mais pesam:`, v: pior.dif, contas: itens }); }
+  A.altas.slice(0, 2).forEach((a) => ataque.push({ t: `📈 ${a.c} subiu ${brl(a.d)}`, d: `Este mês ${brl(a.atual)} contra média de ${brl(a.med)} nos últimos meses. As maiores contas dessa categoria:`, v: a.d, contas: porValor(sai.filter((x) => x.cat === a.c)) }));
+  if (A.cartao > A.teto) ataque.push({ t: `💳 Cartões ${brl(A.cartao - A.teto)} acima do teto`, d: `Teto de ${brl(A.teto)}. Congele compras novas no cartão até a próxima fatura. As maiores no cartão:`, v: A.cartao - A.teto, contas: porValor(sai.filter(doCartao)) });
+  if (A.transp.length >= 4) ataque.push({ t: `🚗 ${A.transp.length} corridas de app: ${brl(sum(A.transp))}`, d: `Trocar metade por ônibus ou carona economiza cerca de ${brl(sum(A.transp) / 2)}.`, v: sum(A.transp) / 2, contas: porValor(A.transp) });
+  if (A.taxas.length) ataque.push({ t: `🧾 ${brl(sum(A.taxas))} em juros, IOF e tarifas`, d: 'Dinheiro jogado fora: evite o limite da conta e pague tudo até o vencimento.', v: sum(A.taxas), contas: porValor(A.taxas) });
+  if (A.assin.length) ataque.push({ t: `📺 Assinaturas: ${brl(sum(A.assin))}`, d: 'Cancele o que não usou no último mês.', v: sum(A.assin) * 0.5, contas: porValor(A.assin) });
+  if (A.opcionais.length) { const r = A.opcionais[0], x = sai.find((q) => q.rid === r.id); ataque.push({ t: `⏸️ Pausar ${r.desc}`, d: `Libera ${brl(r.valor)}/mês até a reserva somar um mês de contas.`, v: +r.valor || 0, contas: x ? [x] : [] }); }
+  ataque.sort((a, b) => b.v - a.v);
+  const unicas = new Map(); ataque.slice(0, 4).forEach((a) => (a.contas || []).slice(0, 3).forEach((x) => unicas.set(key(x), +x.valor || 0)));
+  const baseCorte = [...unicas.values()].reduce((s, v) => s + v, 0), economia = baseCorte * 0.2, novaSobra = A.sobra + economia;
+  // plano de distribuição da renda
+  const plano = linhas.map((l) => `<div class="kv dist"><span>${l.ico} ${l.nome} <small class="muted">${esc(l.dica)}</small></span><b class="${(l.k === 'fut' ? l.pct < l.alvo : l.pct > l.alvo) ? 'neg' : 'pos'}">${Math.round(l.pct * 100)}%</b>
+    <small>Hoje ${brl(l.v)} · ideal ${l.k === 'fut' ? 'pelo menos' : 'até'} ${brl(l.ideal)} (${Math.round(l.alvo * 100)}%)${Math.abs(l.dif) > 1 ? (l.dif > 0 ? (l.k === 'fut' ? ' · faltam ' : ' · cortar ') + brl(l.dif) : ' · dentro do ideal ✅') : ' · no ponto ✅'}</small>
+    <span class="dbar"><i style="width:${Math.min(100, l.pct * 100).toFixed(1)}%;background:var(--${(l.k === 'fut' ? l.pct >= l.alvo : l.pct <= l.alvo) ? 'ok' : l.k === 'fut' ? 'warn' : 'bad'})"></i><em style="left:${(l.alvo * 100).toFixed(1)}%"></em></span></div>`).join('');
+  const divida = A.dividas[0];
+  return `<div class="card analise"><div class="head"><h2>🔎 Análise de ${nomeM(m)}</h2><span class="nota ${corN}">${nota}/10</span></div>
+    <p class="diag">${esc(diag)}</p>
+    <h3>📐 Como distribuir a renda (${brl(E)})</h3><p class="sub" style="margin:0">A linha marca o ideal de cada parte: 55% essenciais, 25% estilo de vida, 20% futuro.</p>${plano}
+    <h3>🔥 Contas que mais pesam</h3><p class="sub" style="margin:0">Maiores contas do mês que dá para cortar, reduzir ou renegociar (sem contar terrenos e parcelas de dívida). Toque para editar.</p>
+    ${(() => { const l = [...sai].filter((x) => !FIXAS_CONTRATO.includes(x.cat)).sort((a, b) => b.valor - a.valor); return l.length ? contasHtml(l, E, 6) : '<div class="empty">Nenhuma conta para cortar.</div>'; })()}
+    <h3>🎯 Onde atacar primeiro</h3>${ataque.length ? `<ol class="ataque">${ataque.slice(0, 4).map((a) => `<li><b>${esc(a.t)}</b><span>${esc(a.d)}</span>${a.contas && a.contas.length ? contasHtml(a.contas, E) : ''}</li>`).join('')}</ol>` : '<div class="empty">Nada fora do lugar este mês. Mantenha o ritmo! 🎉</div>'}
+    ${economia > 1 ? `<div class="rec ok"><b>💰</b><span>As contas listadas acima somam ${brl(baseCorte)}. Cortando 20% delas você libera cerca de ${brl(economia)}/mês, e a sobra do mês iria de ${brl(A.sobra)} para ${brl(novaSobra)}.</span></div>` : ''}
+    <h3>🧭 Plano para ${nomeM(addM(m, 1))}</h3><ol class="ataque">
+      <li><b>Guardar primeiro</b><span>${novaSobra > 0 ? 'Assim que o salário cair, separe ' + brl(Math.max(A.guardar, arred(Math.min(novaSobra, fut.ideal), 50))) + ' para a reserva.' : 'Antes de guardar, feche o mês no azul cortando os itens acima.'}</span></li>
+      ${divida ? `<li><b>Quitar dívida</b><span>Foco em ${esc(divida.r.desc)}: faltam ${divida.falta} parcelas (${brl(divida.resto)}). Use o dinheiro extra para antecipar.</span></li>` : ''}
+      <li><b>Teto dos cartões</b><span>${brl(A.teto)} no mês, bloqueando compras novas em 80% (${brl(A.teto * 0.8)}).</span></li>
+      ${A.terminando.length ? `<li><b>Parcelas que acabam</b><span>${A.terminando.map((p) => esc(p.r.desc)).join(', ')} libera${A.terminando.length > 1 ? 'm' : ''} ${brl(A.liberado)}/mês: mande direto para a reserva.</span></li>` : ''}
+    </ol></div>`;
 }
 function telaEstat() {
   const sai = doMes(st.mes).filter((x) => x.tipo !== 'entrada'), g = { pagas: [], pendentes: [], atrasadas: [] };
@@ -426,7 +606,7 @@ function telaEstat() {
   const mx = Math.max(1, ...ms.map((x) => x[1]));
   const cats = new Map(); for (const x of sai) cats.set(x.cat || 'Outros', (cats.get(x.cat || 'Outros') || 0) + (+x.valor||0));
   const cm = Math.max(1, ...cats.values());
-  return titulo('Estatísticas', 'Como suas despesas estão evoluindo') + stepHtml() +
+  return titulo('Estatísticas', 'Como suas despesas estão evoluindo') + stepHtml() + analiseMesHtml(st.mes) +
     `<div class="tiles"><div class="tile"><span>Previsto</span><b>${brl(t)}</b></div><div class="tile"><span>Pago</span><b class="pos">${brl(pg)}</b></div><div class="tile"><span>Pendente</span><b>${brl(sum(g.pendentes))}</b></div><div class="tile"><span>Vencido</span><b class="${g.atrasadas.length ? 'neg' : ''}">${brl(sum(g.atrasadas))}</b></div></div>
     <div class="card"><div class="head"><h2>Pagamentos do mês</h2><b>${pc}%</b></div><div class="bar"><i style="width:${pc}%"></i></div><div class="head muted"><span>${brl(pg)} pagos</span><span>${brl(t - pg)} em aberto</span></div></div>
     <div class="card"><div class="head"><h2>Orçamento por categoria</h2><button class="link" data-act="tab" data-k="config">Ajustar limites</button></div>${orcHtml(st.mes)}</div>
@@ -454,15 +634,30 @@ function render() {
   $nav.innerHTML = TABS.map(([k,l]) => `<button data-act="tab" data-k="${k}" ${st.tab === k ? 'aria-current="page"' : ''}><svg viewBox="0 0 24 24">${ICON[k]}</svg>${l}</button>`).join('');
   if (loaded < 3) return;
   const t = st.tab;
-  $view.innerHTML = t === 'despesas' ? telaLista('saida') : t === 'recebimentos' ? telaLista('entrada') : t === 'objetivos' ? telaObjetivos() : t === 'estatisticas' ? telaEstat() : t === 'calendario' ? telaCal() : t === 'config' ? telaConfig() : telaInicio();
+  const volta = t !== 'inicio' ? `<button class="voltar" data-act="voltar" aria-label="Voltar para a tela anterior">‹ Voltar</button>` : '';
+  $view.innerHTML = volta + (t === 'despesas' ? telaLista('saida') : t === 'recebimentos' ? telaLista('entrada') : t === 'objetivos' ? telaObjetivos() : t === 'estatisticas' ? telaEstat() : t === 'calendario' ? telaCal() : t === 'config' ? telaConfig() : telaInicio());
   $fab.hidden = !canWrite || !['despesas','recebimentos','objetivos'].includes(t);
   $fab.setAttribute('aria-label', t === 'objetivos' ? 'Criar objetivo' : t === 'recebimentos' ? 'Adicionar recebimento' : 'Adicionar despesa');
 }
-function ir(tab) { st.selMode = false; st.sel.clear(); st.tab = okTab(tab) ? tab : 'inicio'; st.filtro = 'todas'; st.q = ''; try { if (location.hash.slice(1) !== st.tab) location.hash = st.tab; } catch (e) {} render(); window.scrollTo(0, 0); }
+function ir(tab, volta) { const novo = okTab(tab) ? tab : 'inicio'; if (!volta && novo !== st.tab) { st.pilha.push(st.tab); if (st.pilha.length > 30) st.pilha.shift(); } st.selMode = false; st.sel.clear(); st.tab = novo; st.filtro = 'todas'; st.q = ''; try { if (location.hash.slice(1) !== st.tab) location.hash = st.tab; } catch (e) {} render(); window.scrollTo(0, 0); }
 
 /* ---------- editor ---------- */
 const opt = (list, v) => (list.includes(v) || !v ? list : [...list, v]).map((o) => `<option${o === v ? ' selected' : ''}>${esc(o)}</option>`).join('');
 const seg = (name, items, v) => `<div class="seg" role="group">${items.map(([k,l,s]) => `<button type="button" data-act="seg" data-n="${name}" data-k="${k}" aria-pressed="${k === v}"><b>${l}</b><small>${s}</small></button>`).join('')}</div>`;
+/* ---------- campos: texto em MAIÚSCULAS e valores no formato R$ 0,00 ---------- */
+const ehMoeda = (el) => el && el.tagName === 'INPUT' && el.getAttribute('inputmode') === 'decimal';
+const ehTexto = (el) => el && ((el.tagName === 'INPUT' && (!el.getAttribute('type') || el.type === 'text') && !el.getAttribute('inputmode')) || el.tagName === 'TEXTAREA') && el.id !== 'q';
+const fmtMoeda = (v) => { const n = parseV(v); return n == null || Number.isNaN(n) ? '' : brl(n); };
+function prepararCampos(raiz) {
+  (raiz || document).querySelectorAll('input[inputmode="decimal"]:not([data-fmt])').forEach((el) => { el.dataset.fmt = '1'; if (el.value) el.value = fmtMoeda(el.value); if (!el.placeholder || el.placeholder === '0,00') el.placeholder = 'R$ 0,00'; });
+  (raiz || document).querySelectorAll('input:not([type]),input[type="text"],textarea').forEach((el) => { if (ehTexto(el)) el.style.textTransform = 'uppercase'; });
+}
+document.addEventListener('input', (e) => {
+  const el = e.target;
+  if (ehMoeda(el)) { const d = el.value.replace(/\D/g, '').replace(/^0+/, ''); el.value = d ? brl(+d / 100) : ''; try { el.setSelectionRange(el.value.length, el.value.length); } catch (x) {} }
+  else if (ehTexto(el)) { const p = el.selectionStart, up = el.value.toUpperCase(); if (up !== el.value) { el.value = up; try { el.setSelectionRange(p, p); } catch (x) {} } }
+}, true);
+new MutationObserver(() => prepararCampos()).observe(document.documentElement, { childList: true, subtree: true });
 function sheet(html, ctx) { $ed.innerHTML = `<div class="ov" data-act="close-bg"><div class="sheet" role="dialog" aria-modal="true">${html}<div class="err" id="f-err" hidden></div></div></div>`; $ed.hidden = false; $ed._c = ctx; const f = $ed.querySelector('input'); if (f) f.focus(); }
 function fechar() { $ed.hidden = true; $ed.innerHTML = ''; $ed._c = null; }
 function erro(m) { const el = document.getElementById('f-err'); if (el) { el.textContent = m; el.hidden = false; } }
@@ -474,7 +669,7 @@ function novoForm() {
   const isIn = c.tipo === 'entrada', rep = c.classe !== 'avulsa', v = c.v;
   sheet(`<h2>${isIn ? 'Novo recebimento' : 'Nova despesa'}</h2>
     <label class="f">Nome<input id="f-desc" maxlength="80" value="${esc(v.desc)}" placeholder="${isIn ? 'Ex.: Salário' : 'Ex.: Aluguel, internet, mercado…'}"></label>
-    <label class="f">Valor<input id="f-valor" inputmode="decimal" value="${esc(v.valor)}" placeholder="0,00"></label>
+    <label class="f">Valor<input id="f-valor" inputmode="decimal" value="${esc(v.valor)}" placeholder="R$ 0,00"></label>
     <div class="f">Tipo${seg('classe', isIn ? [['fixa','Fixo','Repete, como salário'],['avulsa','Avulso','Uma única vez']] : [['fixa','Fixa','Valor que se repete'],['variavel','Variável','Valor estimado'],['avulsa','Avulsa','Uma única vez']], c.classe)}</div>
     ${rep ? `<div class="f">Repetição${seg('freq', [['mensal','Mensal','Todos os meses'],['anual','Anual','Uma vez por ano']], c.freq)}</div>
       <div class="f">Duração${seg('dur', (isIn ? [] : [['parcelas','Parcelas','Ex.: 3 de 10']]).concat([['sempre','Sempre','Sem data final'],['periodo','Período','Tem mês para acabar']]), c.dur)}</div>
@@ -510,37 +705,62 @@ async function salvarNovo() {
     if (c.tipo !== 'entrada') { const a = doMes(st.mes), sd = sum(a.filter((x) => x.tipo === 'entrada')) - sum(a.filter((x) => x.tipo !== 'entrada')) - valor; toast(sd < 0 ? '😬 Anotado, mas com essa o mês fica ' + brl(-sd) + ' no vermelho.' : '📝 Anotado! Ainda sobram ' + brl(sd) + ' no mês.'); } else toast('💰 Oba, dinheiro entrando! Anotado.');
   } catch (e) { falha(e); }
 }
-function editForm(x) {
-  const isIn = x.tipo === 'entrada';
-  sheet(`<h2>${isIn ? 'Recebimento' : 'Despesa'} · ${MESES[+x.mes.slice(5)-1]}</h2>
+function editForm(x, tipoNovo) {
+  const tipo = tipoNovo || x.tipo, isIn = tipo === 'entrada', r = x.rid && rec.find((q) => q.id === x.rid);
+  const pp = (parc(x) || '').split('/'), grupos = [...new Set(lanc.map((q) => q.grupo).filter(Boolean))];
+  const cats = (l, v) => opt(l, l.includes(v) ? v : l[l.length - 1]);
+  sheet(`<div class="head"><h2>✏️ Editar ${isIn ? 'recebimento' : 'despesa'} · ${MESES[+x.mes.slice(5)-1]}</h2><button type="button" class="link" data-act="edit-reset" title="Volta os campos como estavam">↺ Desfazer alterações</button></div>
+    <div class="f">Tipo${seg('etipo', [['saida','Despesa','Dinheiro saindo'],['entrada','Entrada','Dinheiro entrando']], tipo)}</div>
     <label class="f">Nome<input id="f-desc" maxlength="80" value="${esc(x.desc)}"></label>
     <div class="g2"><label class="f">Valor<input id="f-valor" inputmode="decimal" value="${String(x.valor ?? '').replace('.', ',')}"></label>
       <label class="f">${isIn ? 'Data' : 'Vencimento'}<input id="f-venc" type="date" value="${esc(x.venc || '')}"></label></div>
-    <div class="g2"><label class="f">Categoria<select id="f-cat">${opt(isIn ? CATS_IN : CATS, x.cat)}</select></label>
+    <div class="g2"><label class="f">Mês de referência<input id="f-mes" type="month" value="${esc(x.mes)}" ${x.rid ? 'disabled title="Conta que se repete: o mês é fixo"' : ''}></label>
+      <label class="f ckf"><span>Situação</span><span class="ckl"><input type="checkbox" id="f-pago" ${x.pago ? 'checked' : ''}> ${isIn ? 'Recebido' : 'Pago'}</span></label></div>
+    <div class="g2"><label class="f">Categoria<select id="f-cat">${cats(isIn ? CATS_IN : CATS, x.cat)}</select></label>
       ${isIn ? '<span></span>' : `<label class="f">Forma de pagamento<select id="f-forma">${opt(FORMAS, x.forma || FORMAS[0])}</select></label>`}</div>
+    ${r && r.pt ? `<div class="g2"><label class="f">Parcela deste mês<input id="f-pn" inputmode="numeric" value="${esc(pp[0])}"></label><label class="f">Total de parcelas<input id="f-pt" inputmode="numeric" value="${esc(pp[1])}"></label></div>
+      <p class="muted" style="margin:0">A parcela só avança no mês seguinte se esta estiver marcada como paga. Mudar parcela ou total vale para toda a série.</p>`
+      : `<label class="f">Parcela (opcional, ex.: 3/10)<input id="f-parc" maxlength="9" value="${esc(x.parc || '')}" placeholder="sem parcela"></label>`}
+    <label class="f">Grupo (opcional)<input id="f-grupo" list="dl-grupos" maxlength="60" value="${esc(x.grupo || '')}" placeholder="Ex.: Fatura Cartão Crédito Santander"><datalist id="dl-grupos">${grupos.map((g) => `<option value="${esc(g)}">`).join('')}</datalist></label>
     <label class="f">Observação<input id="f-obs" maxlength="200" value="${esc(x.obs)}"></label>
     ${x.rid ? `<label class="f">Esta conta se repete. Aplicar a mudança em<select id="f-esc"><option value="um">Só neste mês</option><option value="serie">Neste mês e nos próximos</option></select></label>` : ''}
-    <div class="acts"><button class="btn danger" data-act="del">Excluir</button><div style="display:flex;gap:8px"><button class="btn ghost" data-act="close">Cancelar</button><button class="btn" data-act="save-edit">Salvar</button></div></div>`, { kind: 'edit', x });
+    <div class="acts"><button class="btn danger" data-act="del">Excluir</button><div style="display:flex;gap:8px"><button class="btn ghost" data-act="close">Cancelar</button><button class="btn" data-act="save-edit">Salvar</button></div></div>`, { kind: 'edit', x, tipo });
+}
+function trocarTipoEdit(t) {
+  const c = $ed._c; if (!c || c.kind !== 'edit') return;
+  const keep = { desc: val('f-desc'), valor: val('f-valor'), venc: val('f-venc'), obs: val('f-obs'), grupo: val('f-grupo') };
+  editForm({ ...c.x, ...keep }, t); $ed._c.x = c.x;
 }
 async function salvarEdit() {
-  const x = $ed._c.x, desc = val('f-desc').trim(), valor = parseV(val('f-valor')), venc = val('f-venc');
+  const x = $ed._c.x, tipo = $ed._c.tipo || x.tipo, desc = val('f-desc').trim(), valor = parseV(val('f-valor')), venc = val('f-venc');
   if (!desc) return erro('Escreva o nome.');
   if (valor == null || Number.isNaN(valor) || valor < 0) return erro('Digite o valor, por exemplo 150,00.');
   if (venc && venc.slice(0,7) !== x.mes && x.rid) return erro('A data precisa ficar em ' + MESES[+x.mes.slice(5)-1].toLowerCase() + '.');
-  const n = { ...x, desc, valor, venc, cat: val('f-cat'), obs: val('f-obs').trim() }; if (x.tipo !== 'entrada') n.forma = val('f-forma');
-  if (venc && !x.rid) n.mes = venc.slice(0,7);
+  const n = { ...x, tipo, desc, valor, venc, cat: val('f-cat'), obs: val('f-obs').trim(), pago: document.getElementById('f-pago').checked, grupo: val('f-grupo').trim() };
+  if (tipo !== 'entrada') n.forma = val('f-forma'); else delete n.forma;
+  if (!n.grupo) delete n.grupo;
+  if (!x.rid) { const mi = val('f-mes'); if (!/^\d{4}-\d{2}$/.test(mi)) return erro('Escolha o mês de referência.'); n.mes = mi !== x.mes ? mi : venc ? venc.slice(0,7) : x.mes;
+    const pz = val('f-parc').trim(); if (pz && !/^\d{1,3}\/\d{1,3}$/.test(pz)) return erro('Parcela no formato 3/10.'); n.parc = pz; if (!pz) delete n.parc; }
+  const r0 = x.rid && rec.find((q) => q.id === x.rid);
+  let novaParc = null;
+  if (r0 && r0.pt) { const pn = +val('f-pn'), pt = +val('f-pt'), atual = (parc(x) || '').split('/');
+    if (!(Number.isInteger(pn) && Number.isInteger(pt) && pn >= 1 && pt >= pn && pt <= 600)) return erro('Parcela e total precisam ser números, por exemplo 3 e 10.');
+    if (pn !== +atual[0] || pt !== +atual[1]) { const base = pn - pagasAntes(r0, x.mes); if (base < 1) return erro('Com as parcelas já pagas antes deste mês, a parcela deste mês não pode ser menor que ' + (pagasAntes(r0, x.mes) + 1) + '.'); novaParc = { pn: base, pt, fim: '' }; } }
+  const snap = []; const tira = (col, id) => { if (!id || snap.some((s) => s.col === col && s.id === id)) return; const lista = col === 'rec' ? rec : lanc, raw = lista.find((q) => q.id === id); if (raw) { const { id: _i, ...dados } = raw; snap.push({ col, id, dados }); } else snap.push({ col, id, dados: null }); };
+  tira('lanc', x.id || (x.rid ? instId(x) : null)); if (r0) tira('rec', r0.id);
   try {
+    if (novaParc && r0) await C.rec.doc(r0.id).update(novaParc);
     if (x.rid && val('f-esc') === 'serie') {
-      const r = rec.find((q) => q.id === x.rid), campos = { desc, valor, cat: n.cat, dia: venc ? +venc.slice(8) : (r ? r.dia : null) }; if (n.forma) campos.forma = n.forma;
+      const r = rec.find((q) => q.id === x.rid), campos = { tipo, desc, valor, cat: n.cat, dia: venc ? +venc.slice(8) : (r ? r.dia : null) }; if (n.forma) campos.forma = n.forma;
       if (r && r.inicio < x.mes) {
-        const { id, ...base } = r, ref = C.rec.doc();
-        if (base.pt) base.pn = (+base.pn||1) + diffM(r.inicio, x.mes);
+        const { id, ...base } = r, ref = C.rec.doc(); snap.push({ col: 'rec', id: ref.id, dados: null });
+        if (base.pt) { base.pn = parcNum(r, x.mes); base.fim = ''; }
         await ref.set({ ...base, ...campos, inicio: x.mes });
         await C.rec.doc(r.id).update({ fim: addM(x.mes, -1) });
         if (x.id) await C.lanc.doc(x.id).set(corpo({ ...n, rid: ref.id }));
       } else { if (r) await C.rec.doc(r.id).update(campos); if (x.id) await C.lanc.doc(x.id).set(corpo(n)); }
     } else await C.lanc.doc(x.id || instId(x)).set(corpo(n));
-    fechar();
+    fechar(); desfazerUlt = snap; mostrarUndo('✏️ Alteração salva.');
   } catch (e) { falha(e); }
 }
 async function excluir(el) {
@@ -558,7 +778,7 @@ async function excluir(el) {
 function objForm(o) {
   sheet(`<h2>${o.id ? 'Objetivo' : 'Novo objetivo'}</h2>
     <label class="f">Nome do objetivo<input id="f-nome" maxlength="60" value="${esc(o.nome)}" placeholder="Ex.: Reserva, viagem, carro…"></label>
-    <div class="g2"><label class="f">Valor da meta<input id="f-meta" inputmode="decimal" value="${o.meta != null ? String(o.meta).replace('.', ',') : ''}" placeholder="0,00"></label>
+    <div class="g2"><label class="f">Valor da meta<input id="f-meta" inputmode="decimal" value="${o.meta != null ? String(o.meta).replace('.', ',') : ''}" placeholder="R$ 0,00"></label>
       <label class="f">Já guardado<input id="f-guard" inputmode="decimal" value="${String(o.guardado ?? 0).replace('.', ',')}"></label></div>
     <label class="f">Prazo (opcional)<input id="f-prazo" type="month" value="${esc(o.prazo || '')}"></label>
     <div class="acts">${o.id ? '<button class="btn danger" data-act="del">Excluir</button>' : '<span></span>'}<div style="display:flex;gap:8px"><button class="btn ghost" data-act="close">Cancelar</button><button class="btn" data-act="save-obj">${o.id ? 'Salvar' : 'Criar objetivo'}</button></div></div>`, { kind: 'obj', o });
@@ -572,7 +792,7 @@ async function salvarObj() {
   try { if (o.id) await C.obj.doc(o.id).set(b); else await C.obj.add(b); fechar(); } catch (e) { falha(e); }
 }
 function guardarForm(o) {
-  sheet(`<h2>Guardar em ${esc(o.nome)}</h2><label class="f">Quanto você guardou agora<input id="f-add" inputmode="decimal" placeholder="0,00"></label>
+  sheet(`<h2>Guardar em ${esc(o.nome)}</h2><label class="f">Quanto você guardou agora<input id="f-add" inputmode="decimal" placeholder="R$ 0,00"></label>
     <p class="muted" style="margin:0">Guardado até aqui: ${brl(o.guardado)} de ${brl(o.meta)}.</p>
     <div class="acts"><button class="btn ghost" data-act="close">Cancelar</button><button class="btn" data-act="save-add">Guardar</button></div>`, { kind: 'add', o });
 }
@@ -626,7 +846,7 @@ function montarImp(I) {
   const vistos = new Map(), usados = new Set();
   I.txs = brutos.map((x) => {
     const base = I.origem + '|' + x.data + '|' + x.v.toFixed(2) + '|' + x.desc + '|' + x.fit, k = vistos.get(base) || 0; vistos.set(base, k + 1);
-    const tx = { id: 'imp-' + hash(base + '|' + k), data: x.data, desc: x.desc.replace(/\s+/g,' ').slice(0, 80), valor: Math.round(Math.abs(x.v) * 100) / 100, tipo: x.v < 0 ? 'saida' : 'entrada', sel: true, nota: '', match: null };
+    const tx = { id: 'imp-' + hash(base + '|' + k), data: x.data, desc: x.desc.replace(/\s+/g,' ').slice(0, 80).toUpperCase(), valor: Math.round(Math.abs(x.v) * 100) / 100, tipo: x.v < 0 ? 'saida' : 'entrada', sel: true, nota: '', match: null };
     tx.auto = sugerir(tx.desc, tx.tipo);
     const mes = I.mes || tx.data.slice(0, 7);
     if (lanc.some((q) => q.id === tx.id || q.impId === tx.id)) { tx.sel = false; tx.nota = 'já importado antes'; }
@@ -817,7 +1037,7 @@ function avisoAtualizacao(tipo, j) {
 async function buscarAtualizacao(manual) {
   if (!ehNativo() && !manual) return;
   try {
-    if (!manual) { const u = +localStorage.getItem('gege-ult-busca') || 0; if (Date.now() - u < 2 * 3600e3) return; }
+    if (!manual) { const u = +localStorage.getItem('gege-ult-busca') || 0; if (Date.now() - u < 10 * 60e3) return; }
     localStorage.setItem('gege-ult-busca', String(Date.now()));
     const j = await (await fetch(ATUALIZA_BASE + 'versao.json?t=' + Date.now(), { cache: 'no-store' })).json();
     const nat = +localStorage.getItem('gege-nativo') || window.GEGE_NATIVO || 0;
@@ -825,10 +1045,13 @@ async function buscarAtualizacao(manual) {
     if (+j.nativo > nat) { avisoAtualizacao('apk', j); return; }
     const h = await (await fetch(ATUALIZA_BASE + 'index.html?t=' + Date.now(), { cache: 'no-store' })).text();
     if (!h.includes('window.GEGE_V = ' + j.v + ';') || !h.includes('</html>')) throw new Error('arquivo incompleto');
-    localStorage.setItem('gege-app-html', h); localStorage.setItem('gege-app-v', String(j.v)); localStorage.setItem('gege-tentativas', '0');
-    avisoAtualizacao('pronta', j);
+    localStorage.setItem('gege-app-html', h); localStorage.setItem('gege-app-v', String(j.v)); localStorage.setItem('gege-tentativas', '0'); localStorage.setItem('gege-app-info', JSON.stringify({ nome: j.nome, novidades: j.novidades || '' }));
+    avisoAtualizacao('pronta', j); render();
   } catch (e) { if (manual) toast('⚠️ Não consegui procurar atualização agora. Confira a internet.'); }
 }
+function updPendente() { try { const v = +localStorage.getItem('gege-app-v') || 0; if (v > (window.GEGE_V || 0) && localStorage.getItem('gege-app-html')) return JSON.parse(localStorage.getItem('gege-app-info') || '{}'); } catch (e) {} return null; }
+const updCard = () => { const j = updPendente(); return j ? `<div class="card upd-card"><div><h2>🎁 Atualização ${esc(j.nome || '')} disponível</h2><p class="sub">${esc(j.novidades || 'Versão nova pronta para usar.')} Seus dados continuam.</p></div><button class="btn" data-act="upd-aplicar">Atualizar agora</button></div>` : ''; };
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') buscarAtualizacao(false); });
 const atualizaHtml = () => `<div class="card"><div><h2>📲 Atualizações</h2><p class="sub">Versão ${esc(window.GEGE_NOME || '')}. O app procura versão nova sozinho e atualiza sem reinstalar e sem perder nada.</p></div><button type="button" class="btn ghost" data-act="upd-buscar">Procurar atualização agora</button></div>`;
 
 /* ---------- avisos no celular ---------- */
@@ -1027,7 +1250,7 @@ async function apagarVarios(keys, rotulo) {
 }
 async function desfazer() {
   const lista = desfazerUlt; if (!lista) return; desfazerUlt = null;
-  try { for (const { id, dados } of lista) { if (dados) await C.lanc.doc(id).set(dados); else await C.lanc.doc(id).delete(); }
+  try { for (const { col, id, dados } of lista) { const cc = col === 'rec' ? C.rec : C.lanc; if (dados) await cc.doc(id).set(dados); else await cc.doc(id).delete(); }
     const el = document.getElementById('undo'); if (el) el.hidden = true; toast('↩ Pronto, voltou tudo pro lugar!'); }
   catch (e) { toast('⚠️ Não consegui desfazer agora.'); }
 }
@@ -1070,11 +1293,15 @@ document.addEventListener('click', async (ev) => {
   else if (a === 'filtro') { st.filtro = k; render(); }
   else if (a === 'dia') { st.dia = k; render(); }
   else if (a === 'new') { if (st.tab === 'objetivos') objForm({ nome: '', guardado: 0 }); else { $ed._c = null; novoForm(); } }
+  else if (a === 'seg' && el.dataset.n === 'etipo') trocarTipoEdit(el.dataset.k);
   else if (a === 'seg') { const c = lerNovo(); c[el.dataset.n] = k; novoForm(); }
   else if (a === 'edit') { const x = achar(k); if (x && canWrite) editForm(x); }
   else if (a === 'obj') { const o = obj.find((q) => q.id === k); if (o && canWrite) objForm(o); }
   else if (a === 'guardar') { const o = obj.find((q) => q.id === k); if (o) guardarForm(o); }
   else if (a === 'close') fechar();
+  else if (a === 'dobra') { const kk = el.dataset.k, atual = kk === 'plano' ? (st.dobra.plano ?? false) : (st.dobra.estrat ?? true); st.dobra[kk] = !atual; render(); }
+  else if (a === 'voltar') { let t = st.pilha.pop(); while (t === st.tab && st.pilha.length) t = st.pilha.pop(); ir(t && t !== st.tab ? t : 'inicio', true); }
+  else if (a === 'edit-reset') { const c = $ed._c; if (c && c.kind === 'edit') { editForm(c.x); toast('↺ Campos voltaram como estavam.'); } }
   else if (a === 'close-bg') { if (ev.target === el) fechar(); }
   else if (a === 'save-novo') salvarNovo();
   else if (a === 'save-edit') salvarEdit();
@@ -1191,7 +1418,7 @@ function restaurar() {
   db.doc('config/plano').onSnapshot((d) => { plano = d.exists ? (d.data() || {}) : {}; render(); });
   const sub = (col, set) => col.onSnapshot((sn) => { set(sn.docs.map((d) => ({ ...d.data(), id: d.id }))); loaded = Math.max(loaded, 0); render(); });
   loaded = 3;
-  setTimeout(() => { try { localStorage.setItem('gege-tentativas', '0'); } catch (e) {} buscarAtualizacao(false); }, 3000);
+  setTimeout(() => { try { localStorage.setItem('gege-tentativas', '0'); } catch (e) {} const pend = updPendente(); if (pend) avisoAtualizacao('pronta', pend); buscarAtualizacao(false); }, 3000);
   sub(C.lanc, (v) => { lanc = v; }); sub(C.rec, (v) => { rec = v; }); sub(C.obj, (v) => { obj = v; });
   render();
   if (!nativo() && 'serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('./sw.js').catch(() => {});
