@@ -1,0 +1,36 @@
+name: Publicar atualizacao
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['projeto.zip']
+
+permissions:
+  contents: write
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publicar a versao nova para o app baixar sozinho
+        run: |
+          unzip -q projeto.zip -d proj
+          mkdir -p app
+          cp proj/www/index.html app/index.html
+          python3 - <<'PY'
+          import json, re
+          h = open('proj/www/index.html').read()
+          v = int(re.search(r'window\.GEGE_V = (\d+);', h).group(1))
+          n = int(re.search(r'window\.GEGE_NATIVO = (\d+);', h).group(1))
+          nome = re.search(r"window\.GEGE_NOME = '([^']*)'", h).group(1)
+          nov = open('proj/novidades.txt').read().strip()
+          json.dump({'v': v, 'nativo': n, 'nome': nome, 'novidades': nov}, open('app/versao.json', 'w'), ensure_ascii=False)
+          print('versao', v, 'nativo', n, nome)
+          PY
+          git config user.name "Gege Finance"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app
+          git commit -m "Atualizacao do app" || echo "nada novo"
+          git push
