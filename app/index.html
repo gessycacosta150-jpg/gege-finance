@@ -8,7 +8,7 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
 </head><body>
 <script>
-window.GEGE_V = 7; window.GEGE_NATIVO = 3; window.GEGE_NOME = '1.6';
+window.GEGE_V = 8; window.GEGE_NATIVO = 3; window.GEGE_NOME = '1.7';
 (function () {
   try {
     if (window.__gegeAtual) return;
@@ -238,6 +238,13 @@ button.rec-ir{font:inherit;font-weight:600;border:0;width:100%;text-align:left;c
 .st.pend{color:var(--accent)}.st.bad{color:#fff;background:var(--bad);border-color:var(--bad)}
 .st.ok{color:var(--ok);background:var(--ok-soft);border-color:transparent}
 .st:active{transform:scale(.96)}
+.rec .como{display:block;font-weight:500;font-size:.72rem;opacity:.75;margin-top:3px}
+.det-conta{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:10px 12px;border-radius:14px;background:var(--panel2);font-variant-numeric:tabular-nums}
+.det-conta span:nth-last-child(2),.det-conta b:last-child{border-top:1px solid var(--line);padding-top:4px;font-weight:800}
+.det-l{display:grid;gap:4px;max-height:42vh;overflow:auto}
+.det-li{all:unset;box-sizing:border-box;display:flex;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:12px;background:var(--panel2);cursor:pointer}
+.det-li span{display:grid;min-width:0}.det-li b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.9rem}.det-li small{font-size:.74rem;color:var(--muted)}
+.det-li em{font-style:normal;font-weight:800;white-space:nowrap}
 </style>
 
 <div class="app" id="view"><div class="card"><div class="empty" id="boot">Carregando suas contas…</div></div></div>
@@ -498,7 +505,35 @@ function destinoRecado(e, t) {
   if (e === '🐷') return { tab: 'objetivos', msg: 'seus objetivos' };
   return { tab: 'despesas', msg: 'despesas do mês' };
 }
-const recHtml = (m) => `<div class="recs">${recados(m).map(([k,e,t]) => { const d = destinoRecado(e, t); return `<button class="rec ${k} rec-ir" data-act="rec-ir" data-tab="${d.tab}" data-filtro="${esc(d.filtro || '')}" data-q="${esc(d.q || '')}" data-msg="${esc(d.msg)}" aria-label="${esc(t)}. Toque para ver"><b>${e}</b><span>${esc(t)}</span><i aria-hidden="true">›</i></button>`; }).join('')}</div>`;
+/* "de onde vem este número": conta e lista de lançamentos de cada recado */
+function detalheRecado(e, t, m) {
+  const all = doMes(m), ent = all.filter((x) => x.tipo === 'entrada'), sai = all.filter((x) => x.tipo !== 'entrada'), E = sum(ent), S = sum(sai), A = analise(m);
+  const porValor = (l) => [...l].sort((a, b) => b.valor - a.valor), cat = CATS.find((c) => t.startsWith(c));
+  if (e === '⏰') { const l = sai.filter((x) => !x.pago && estado(x)[0] === 'bad'); return { tit: 'Contas atrasadas', conta: [['Contas com vencimento antes de hoje e ainda não pagas', l.length + ' contas'], ['= Total atrasado', brl(sum(l))]], como: 'Entra aqui toda despesa de ' + nomeM(m) + ' com data de vencimento já passada que não está marcada como paga.', itens: l }; }
+  if (e === '🚨' || e === '🥵' || e === '🐷') return { tit: 'Saldo do mês', conta: [['Entradas previstas (' + ent.length + ')', brl(E)], ['− Despesas do mês (' + sai.length + ')', brl(S)], ['= ' + (E - S < 0 ? 'Falta' : 'Sobra'), brl(Math.abs(E - S))]], como: 'Soma de tudo o que está lançado em ' + nomeM(m) + ': todas as entradas (recebidas ou não) menos todas as despesas (pagas ou não), incluindo as importadas de extrato e fatura. Se tiver transferência entre contas suas ou pagamento de fatura lançado junto com as compras, o valor fica errado: confira as maiores abaixo.', itens: porValor(sai).slice(0, 12), itens2: porValor(ent), tit2: 'Entradas consideradas' };
+  if ((e === '🧨' || e === '🫣') && cat) { const l = sai.filter((x) => (x.cat || 'Outros') === cat), lim = +((cfg.tetos || {})[cat]) || 0; return { tit: cat, conta: [['Soma de ' + cat + ' (' + l.length + ')', brl(sum(l))], ['− Seu limite (Configurações)', brl(lim)], ['= ' + (sum(l) > lim ? 'Passou' : 'Sobra'), brl(Math.abs(sum(l) - lim))]], como: 'Soma de todas as despesas de ' + nomeM(m) + ' com a categoria "' + cat + '", pagas ou não. Se alguma estiver na categoria errada, toque nela e troque.', itens: porValor(l) }; }
+  if (e === '💳') { const l = sai.filter(doCartao); return { tit: 'Gastos no cartão', conta: [['Compras no cartão (' + l.length + ')', brl(A.cartao)], ['− Teto dos cartões', brl(A.teto)], ['= ' + (A.cartao > A.teto ? 'Passou' : 'Sobra'), brl(Math.abs(A.cartao - A.teto))]], como: 'Conta toda despesa de ' + nomeM(m) + ' com forma de pagamento "Cartão…" ou dentro de um grupo "Fatura…". O teto vem ' + ((cfg.plano || {}).teto ? 'do campo Teto dos cartões nas Configurações.' : (cfg.tetos || {})['Cartões e parcelados'] ? 'do seu limite de "Cartões e parcelados".' : 'do plano (R$ 900), porque você ainda não definiu um teto.'), itens: porValor(l) }; }
+  if (e === '✋') { const l = ent.filter((x) => !x.pago); return { tit: 'Entradas que ainda não caíram', conta: [['Entradas não marcadas como recebidas (' + l.length + ')', brl(sum(l))]], como: 'Entradas de ' + nomeM(m) + ' sem o ✓ Recebido. Quando o dinheiro cair, toque em "Recebi" na entrada.', itens: l }; }
+  if (e === '📉' || e === '📈') { const ant = addM(m, -1), sa = doMes(ant).filter((x) => x.tipo !== 'entrada'), g = new Map();
+    for (const x of sai) g.set(x.cat || 'Outros', (g.get(x.cat || 'Outros') || 0) + (+x.valor || 0)); for (const x of sa) g.set(x.cat || 'Outros', (g.get(x.cat || 'Outros') || 0) - (+x.valor || 0));
+    const dif = [...g].filter(([, v]) => Math.abs(v) > 0.5).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).slice(0, 6);
+    return { tit: 'Comparação com ' + nomeM(ant), conta: [['Despesas de ' + nomeM(m), brl(S)], ['− Despesas de ' + nomeM(ant), brl(sum(sa))], ['= Diferença', brl(S - sum(sa))]].concat(dif.map(([c, v]) => ['  ' + c, (v > 0 ? '+' : '') + brl(v)])), como: 'Total de despesas lançadas em cada mês, pagas ou não. Embaixo, as categorias que mais mudaram.', itens: [] }; }
+  if (e === '🎉') { const l = sai.filter((x) => { const p = parc(x).split('/'); return p[1] && p[0] === p[1]; }); return { tit: 'Últimas parcelas', conta: [['Parcelas que acabam em ' + nomeM(m), brl(sum(l))]], como: 'Contas parceladas cuja parcela deste mês é a última.', itens: l }; }
+  if (e === '👑') return { tit: 'Contas pagas', conta: [['Despesas pagas (' + sai.length + ')', brl(S)]], como: 'Todas as despesas de ' + nomeM(m) + ' estão marcadas como pagas.', itens: porValor(sai).slice(0, 12) };
+  return { tit: 'Detalhe', conta: [], como: t, itens: [] };
+}
+function abrirDetalhe(el) {
+  const e = el.dataset.e, t = el.dataset.t, d = detalheRecado(e, t, st.mes);
+  const lin = (x) => `<button class="det-li" data-act="edit" data-k="${esc(key(x))}"><span><b>${esc(x.desc)}</b><small>${esc([x.cat, x.forma, x.grupo, x.venc ? dia(x.venc) : '', x.pago ? (x.tipo === 'entrada' ? 'recebido' : 'pago') : 'pendente'].filter(Boolean).join(' · '))}</small></span><em>${brl(x.valor)}</em></button>`;
+  sheet(`<h2>${e} ${esc(d.tit)}</h2><p class="muted" style="margin:0">${esc(t)}</p>
+    ${d.conta.length ? `<div class="det-conta">${d.conta.map(([a, b]) => `<span>${esc(a)}</span><b>${esc(b)}</b>`).join('')}</div>` : ''}
+    <p class="sub" style="margin:0">ℹ️ ${esc(d.como)}</p>
+    ${d.itens.length ? `<h3 style="margin:4px 0 0">Lançamentos considerados${d.itens.length >= 12 ? ' (os maiores)' : ''}</h3><div class="det-l">${d.itens.map(lin).join('')}</div>` : ''}
+    ${d.itens2 && d.itens2.length ? `<h3 style="margin:4px 0 0">${esc(d.tit2)}</h3><div class="det-l">${d.itens2.map(lin).join('')}</div>` : ''}
+    <p class="muted" style="margin:0">Toque num lançamento para corrigir valor, categoria ou situação.</p>
+    <div class="acts"><button class="btn ghost" data-act="close">Fechar</button><button class="btn" data-act="rec-ir" data-tab="${el.dataset.tab}" data-filtro="${esc(el.dataset.filtro)}" data-q="${esc(el.dataset.q)}" data-msg="${esc(el.dataset.msg)}">Ver na lista</button></div>`, { kind: 'det' });
+}
+const recHtml = (m) => `<div class="recs">${recados(m).map(([k,e,t]) => { const d = destinoRecado(e, t); return `<button class="rec ${k} rec-ir" data-act="rec-det" data-e="${e}" data-t="${esc(t)}" data-tab="${d.tab}" data-filtro="${esc(d.filtro || '')}" data-q="${esc(d.q || '')}" data-msg="${esc(d.msg)}" aria-label="${esc(t)}. Toque para ver de onde vem"><b>${e}</b><span>${esc(t)}<small class="como">ⓘ toque para ver a conta e os lançamentos</small></span><i aria-hidden="true">›</i></button>`; }).join('')}</div>`;
 
 /* ---------- screens ---------- */
 function telaLista(tipo) {
@@ -1415,7 +1450,8 @@ document.addEventListener('click', async (ev) => {
   else if (a === 'guardar') { const o = obj.find((q) => q.id === k); if (o) guardarForm(o); }
   else if (a === 'close') fechar();
   else if (a === 'dobra') { const kk = el.dataset.k, atual = kk === 'plano' ? (st.dobra.plano ?? false) : (st.dobra.estrat ?? true); st.dobra[kk] = !atual; render(); }
-  else if (a === 'rec-ir') { ir(el.dataset.tab); st.filtro = el.dataset.filtro || 'todas'; st.q = el.dataset.q || ''; render(); toast('🔎 Mostrando: ' + el.dataset.msg); }
+  else if (a === 'rec-det') abrirDetalhe(el);
+  else if (a === 'rec-ir') { fechar(); ir(el.dataset.tab); st.filtro = el.dataset.filtro || 'todas'; st.q = el.dataset.q || ''; render(); toast('🔎 Mostrando: ' + el.dataset.msg); }
   else if (a === 'xls-exp') exportarExcel();
   else if (a === 'pagar') marcarPago(k, el);
   else if (a === 'voltar') { let t = st.pilha.pop(); while (t === st.tab && st.pilha.length) t = st.pilha.pop(); ir(t && t !== st.tab ? t : 'inicio', true); }
